@@ -1,64 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from enum import Enum
 from django.core.exceptions import ValidationError
-
-
-class CustomerType(Enum):
-    ADMIN = "Admin"
-    MANAGER = "Manager"
-    CUSTOMER = "Customer"
 
 
 class Customer(AbstractUser):
     """
     Class of Customer
     """
+
     # username
-    username = models.CharField(
+    username: models.CharField = models.CharField(
         max_length=64,
-        choices=[(role, role.value) for role in CustomerType],
+        choices=[("admin", "Admin"), ("manager", "Manager"), ("customer", "Customer")],
         blank=False,
         null=False,
         unique=True,
-        verbose_name="Username of Customer"
+        verbose_name="Username of Customer",
     )
     # first name
-    first_name = models.CharField(
-        max_length=128,
-        blank=False,
-        null=False,
-        verbose_name="First name of Customer"
+    first_name: models.CharField = models.CharField(
+        max_length=128, blank=False, null=False, verbose_name="First name of Customer"
     )
     # last name
-    last_name = models.CharField(
-        max_length=128,
-        blank=False,
-        null=False,
-        verbose_name="Last name of Customer"
+    last_name: models.CharField = models.CharField(
+        max_length=128, blank=False, null=False, verbose_name="Last name of Customer"
     )
     # email
-    email = models.EmailField(
-        blank=False,
-        null=False,
-        unique=True,
-        verbose_name="Email of Customer"
+    email: models.EmailField = models.EmailField(
+        blank=False, null=False, unique=True, verbose_name="Email of Customer"
     )
     # password
-    password = models.CharField(
-        max_length=128,
-        blank=False,
-        null=False,
-        verbose_name="Password of Customer"
+    password: models.CharField = models.CharField(
+        max_length=128, blank=False, null=False, verbose_name="Password of Customer"
     )
     # balance
-    balance = models.DecimalField(
-        default=0.0,
-        max_digits=8,
-        decimal_places=2,
-        blank=False,
-        null=False,
-        verbose_name="Balance of Customer"
+    balance: models.DecimalField = models.DecimalField(
+        default=0.0, max_digits=8, decimal_places=2, verbose_name="Balance of Customer"
     )
 
     def clean(self):
@@ -73,7 +50,9 @@ class Customer(AbstractUser):
             # return validate password
             return
         # Else other case - raise ValidationError with message
-        raise ValidationError(message="Password must contain at least one special symbol")
+        raise ValidationError(
+            message="Password must contain at least one special symbol"
+        )
 
     def __repr__(self):
         return self.username
@@ -87,37 +66,35 @@ class SaleHistoryOfCustomer(models.Model):
     """
     Class of Sale History for Customer
     """
+
     # customer
-    customer = models.ForeignKey(
+    customer: models.ForeignKey = models.ForeignKey(
         to="Customer",
         on_delete=models.CASCADE,
         blank=False,
         null=False,
-        verbose_name="Customer"
+        verbose_name="Customer",
     )
     # car
-    car = models.ForeignKey(
+    car: models.ForeignKey = models.ForeignKey(
         to="api.Car",
         on_delete=models.CASCADE,
         blank=False,
         null=False,
-        verbose_name="Car"
+        verbose_name="Car",
     )
     # price
-    price = models.DecimalField(
+    price: models.DecimalField = models.DecimalField(
         default=0.0,
         max_digits=8,
         decimal_places=2,
         blank=False,
         null=False,
-        verbose_name="Price of Sale History"
+        verbose_name="Price of Sale History",
     )
     # date of deal
-    date = models.DateTimeField(
-        auto_now_add=True,
-        blank=False,
-        null=False,
-        verbose_name="Date of deal"
+    date: models.DateTimeField = models.DateTimeField(
+        auto_now_add=True, blank=False, null=False, verbose_name="Date of deal"
     )
 
     def __repr__(self):

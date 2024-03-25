@@ -16,6 +16,7 @@ pre-commit = "*"
 black = "*"
 mypy = "*"
 django-dynamic-fixture = "*"
+django-stubs = "*"
 
 [dev-packages]
 

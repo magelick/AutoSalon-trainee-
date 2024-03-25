@@ -10,9 +10,8 @@ from .models import (
     Supplier,
     SaleHistory,
     SpecialOfferOfSupplier,
-    SpecialOfferOfAutoSalon
+    SpecialOfferOfAutoSalon,
 )
-from users.models import Customer
 
 
 class AutoSalonTestCase(TestCase):
@@ -71,7 +70,9 @@ class AutoSalonTestCase(TestCase):
         Test of check customer's value
         :return:
         """
-        autosalon = G(AutoSalon, customers=[F(username="Customer"), F(username="Admin")])
+        autosalon = G(
+            AutoSalon, customers=[F(username="Customer"), F(username="Admin")]
+        )
         self.assertEqual(autosalon.customers.count(), 2)
         self.assertNotEqual(autosalon.customers.count(), 1)
 
@@ -310,7 +311,9 @@ class SpecialOfferOfSupplierTestCase(TestCase):
         Test of check supplier's value
         :return:
         """
-        special_offer_of_supplier = G(SpecialOfferOfSupplier, supplier=F(name="GrandMotors"))
+        special_offer_of_supplier = G(
+            SpecialOfferOfSupplier, supplier=F(name="GrandMotors")
+        )
         self.assertEqual(special_offer_of_supplier.supplier.name, "GrandMotors")
         self.assertNotEqual(special_offer_of_supplier.supplier.name, "CustomAuto")
 
@@ -319,18 +322,28 @@ class SpecialOfferOfSupplierTestCase(TestCase):
         Test of check start_date's value
         :return:
         """
-        special_offer_of_supplier = G(SpecialOfferOfSupplier, start_date=datetime.date(2023, 10, 2))
-        self.assertEqual(special_offer_of_supplier.start_date, datetime.date(2023, 10, 2))
-        self.assertNotEqual(special_offer_of_supplier.start_date, datetime.date(2022, 11, 10))
+        special_offer_of_supplier = G(
+            SpecialOfferOfSupplier, start_date=datetime.date(2023, 10, 2)
+        )
+        self.assertEqual(
+            special_offer_of_supplier.start_date, datetime.date(2023, 10, 2)
+        )
+        self.assertNotEqual(
+            special_offer_of_supplier.start_date, datetime.date(2022, 11, 10)
+        )
 
     def test_special_offer_of_supplier_end_date(self):
         """
         Test of check end_date's value
         :return:
         """
-        special_offer_of_supplier = G(SpecialOfferOfSupplier, end_date=datetime.date(2023, 10, 2))
+        special_offer_of_supplier = G(
+            SpecialOfferOfSupplier, end_date=datetime.date(2023, 10, 2)
+        )
         self.assertEqual(special_offer_of_supplier.end_date, datetime.date(2023, 10, 2))
-        self.assertNotEqual(special_offer_of_supplier.end_date, datetime.date(2023, 12, 25))
+        self.assertNotEqual(
+            special_offer_of_supplier.end_date, datetime.date(2023, 12, 25)
+        )
 
 
 class SpecialOfferOfAutoSalonTestCase(TestCase):
@@ -352,7 +365,9 @@ class SpecialOfferOfAutoSalonTestCase(TestCase):
         Test of check description's value
         :return:
         """
-        special_offer_of_autosalon = G(SpecialOfferOfAutoSalon, descr="20% for all cars")
+        special_offer_of_autosalon = G(
+            SpecialOfferOfAutoSalon, descr="20% for all cars"
+        )
         self.assertEqual(special_offer_of_autosalon.descr, "20% for all cars")
         self.assertNotEqual(special_offer_of_autosalon.descr, "5% for BMW M5 G30")
 
@@ -381,15 +396,27 @@ class SpecialOfferOfAutoSalonTestCase(TestCase):
         Test of check start_date's value
         :return:
         """
-        special_offer_of_autosalon = G(SpecialOfferOfAutoSalon, start_date=datetime.date(2023, 10, 2))
-        self.assertEqual(special_offer_of_autosalon.start_date, datetime.date(2023, 10, 2))
-        self.assertNotEqual(special_offer_of_autosalon.start_date, datetime.date(2023, 12, 25))
+        special_offer_of_autosalon = G(
+            SpecialOfferOfAutoSalon, start_date=datetime.date(2023, 10, 2)
+        )
+        self.assertEqual(
+            special_offer_of_autosalon.start_date, datetime.date(2023, 10, 2)
+        )
+        self.assertNotEqual(
+            special_offer_of_autosalon.start_date, datetime.date(2023, 12, 25)
+        )
 
     def test_special_offer_of_autosalon_end_date(self):
         """
         Test of check end_date's value
         :return:
         """
-        special_offer_of_autosalon = G(SpecialOfferOfAutoSalon, end_date=datetime.date(2023, 10, 2))
-        self.assertEqual(special_offer_of_autosalon.end_date, datetime.date(2023, 10, 2))
-        self.assertNotEqual(special_offer_of_autosalon.end_date, datetime.date(2023, 12, 25))
+        special_offer_of_autosalon = G(
+            SpecialOfferOfAutoSalon, end_date=datetime.date(2023, 10, 2)
+        )
+        self.assertEqual(
+            special_offer_of_autosalon.end_date, datetime.date(2023, 10, 2)
+        )
+        self.assertNotEqual(
+            special_offer_of_autosalon.end_date, datetime.date(2023, 12, 25)
+        )

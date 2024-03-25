@@ -20,8 +20,9 @@ jobs:
         pipenv install
 
     - name: 'run flake8'
-      run: pipenv run flake8 .
+      run: pipenv run flake8 --config .flake8
 
     - name: 'run mypy'
-      run: pipenv run mypy .
+      run: cd autosalon && pipenv run mypy .
+
 

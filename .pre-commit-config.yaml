@@ -5,12 +5,14 @@ repos:
       - id: flake8  # Identifier of hook
         name: flake8  # Name of hook
         entry: flake8 --config .flake8 .  # Command for start work hook
-        language: system  # Hook will work with user command line system
+        language: system # Hook will work with user command line system
+        types:  # Define type of file for checking
+          - python  # .py-files
         pass_filenames: false  # Filename transfer for that hook or not
 
       - id: black  # Identifier of hook
         name: black  # Name of hook
-        entry: black --config ./autosalon .black  # Command for start work hook
+        entry: black --config ./ .black  # Command for start work hook
         language: system  # Hook will work with user command line system
         types:  # Define type of file for checking
           - python  # .py-files

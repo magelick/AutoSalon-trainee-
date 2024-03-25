@@ -4,7 +4,6 @@ from django.test import TestCase
 from django_dynamic_fixture import G, F
 
 from .models import Customer, SaleHistoryOfCustomer
-from api.models import Car
 
 
 class CustomerTestCase(TestCase):
@@ -73,12 +72,15 @@ class SaleHistoryOfCustomerTestCase(TestCase):
     """
     TestCase of Customer's model
     """
+
     def test_sale_history_of_customer_customer(self):
         """
         Test of check customer's value
         :return:
         """
-        sale_history = G(SaleHistoryOfCustomer, customer=F(username="Customer", first_name="Vasya"))
+        sale_history = G(
+            SaleHistoryOfCustomer, customer=F(username="Customer", first_name="Vasya")
+        )
         self.assertEqual(sale_history.customer.username, "Customer")
         self.assertNotEqual(sale_history.customer.username, "Admin")
         self.assertEqual(sale_history.customer.first_name, "Vasya")
@@ -110,4 +112,3 @@ class SaleHistoryOfCustomerTestCase(TestCase):
         sale_history = G(SaleHistoryOfCustomer, date=datetime.date(2023, 2, 10))
         self.assertEqual(sale_history.date, datetime.date(2023, 2, 10))
         self.assertNotEqual(sale_history.date, datetime.date(2022, 3, 15))
-
