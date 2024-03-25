@@ -36,24 +36,15 @@ class AutoSalon(models.Model):
     )
     # suppliers
     suppliers = models.ManyToManyField(
-        to="Customer",
+        to="Supplier",
         blank=False,
-        null=False,
         verbose_name="Suppliers of AutoSalon"
     )
     # customers
     customers = models.ManyToManyField(
-        to="Customer",
+        to="users.Customer",
         blank=False,
-        null=False,
         verbose_name="Customers of AutoSalon"
-    )
-    # counter of car
-    counter_of_car = models.PositiveIntegerField(
-        default=0,
-        blank=False,
-        null=False,
-        verbose_name="Counter of Car"
     )
 
     def __repr__(self):
@@ -69,7 +60,7 @@ class Car(models.Model):
     Model of Car
     """
     # model
-    model = models.CharField(
+    model_name = models.CharField(
         max_length=128,
         blank=False,
         null=False,
@@ -80,15 +71,13 @@ class Car(models.Model):
         to="AutoSalon",
         related_name="cars",
         blank=False,
-        null=False,
         verbose_name="Autosalons with Car"
     )
     # options
     options = models.ManyToManyField(
         to="OptionCar",
-        related_name="cars",
+        related_name="cars_options",
         blank=False,
-        null=False,
         verbose_name="Options of Car"
     )
     # is active instance
@@ -98,7 +87,7 @@ class Car(models.Model):
     )
 
     def __repr__(self):
-        return self.model
+        return self.model_name
 
     class Meta:
         verbose_name = "car"
@@ -126,6 +115,20 @@ class OptionCar(models.Model):
         max_length=64,
         blank=False,
         null=False,
+        choices=[
+            ('sedan', 'Sedan'),
+            ('coupe', 'Coupe'),
+            ('hatchback', 'Hatchback'),
+            ('pickup', 'Pickup'),
+            ('off-road', 'Off-road'),
+            ('sport', 'Sport'),
+            ('hyper', 'Hyper'),
+            ('suv', 'SUV'),
+            ('crossover', 'Crossover'),
+            ('minivan', 'Minivan'),
+            ('convertible', 'Сonvertible'),
+            ('universal', 'Universal')
+        ],
         verbose_name="Body type of Car"
     )
     # transmission type
@@ -133,6 +136,10 @@ class OptionCar(models.Model):
         max_length=64,
         blank=False,
         null=False,
+        choices=[
+            ("automatic", "Automatic"),
+            ("mechanics", "Mechanic")
+        ],
         verbose_name="Transmission type of Car"
     )
     # drive unit type
@@ -140,6 +147,11 @@ class OptionCar(models.Model):
         max_length=64,
         blank=False,
         null=False,
+        choices=[
+            ("complete", "Complete"),
+            ("front", "Front"),
+            ("back", "Back")
+        ],
         verbose_name="Drive unit type of Car"
     )
     # color
@@ -147,6 +159,19 @@ class OptionCar(models.Model):
         max_length=64,
         blank=False,
         null=False,
+        choices=[
+            ("red", "Red"),
+            ("blue", "Blue"),
+            ("green", "Green"),
+            ("orange", "Orange"),
+            ("yellow", "Yellow"),
+            ("violet", "Violet"),
+            ("brown", "Brown"),
+            ("black", "Black"),
+            ("grey", "Grey"),
+            ("white", "White"),
+            ("pink", "Pink"),
+        ],
         verbose_name="Color of Car"
     )
     # engine type
@@ -154,21 +179,23 @@ class OptionCar(models.Model):
         max_length=64,
         blank=False,
         null=False,
+        choices=[
+            ("petrol", "Petrol"),
+            ("diesel", "Diesel"),
+            ("electro", "Electro")
+        ],
         verbose_name="Engine type of Car"
     )
     # cars
     cars = models.ManyToManyField(
         to="Car",
-        related_name="options",
+        related_name="options_car",
         blank=False,
-        null=False,
         verbose_name="Cars with Option"
     )
-    # is active instance
-    is_active = models.BooleanField(
-        default=True,
-        verbose_name="Flag is active"
-    )
+
+    def __repr__(self):
+        return self.color
 
     class Meta:
         verbose_name = "option of car"
@@ -203,9 +230,8 @@ class Supplier(models.Model):
     # cars, which have supplier
     cars = models.ManyToManyField(
         to="Car",
-        related_name="suppliers",
+        related_name="suppliers_of_car",
         blank=False,
-        null=False,
         verbose_name="Cars, which have Supplier"
     )
     # is active instance
@@ -350,6 +376,19 @@ class SpecialOfferOfSupplier(models.Model):
         blank=False,
         null=False,
         verbose_name="Supplier of that Special Offer"
+    )
+    # start date
+    start_date = models.DateTimeField(
+        auto_now_add=True,
+        blank=False,
+        null=False,
+        verbose_name="Start date of Special Offer"
+    )
+    # end date
+    end_date = models.DateTimeField(
+        blank=True,
+        null=False,
+        verbose_name="End date of Special Offer"
     )
     # is active instance
     is_active = models.BooleanField(

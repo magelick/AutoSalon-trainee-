@@ -1,5 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from enum import Enum
+from django.core.exceptions import ValidationError
+
+
+class CustomerType(Enum):
+    ADMIN = "Admin"
+    MANAGER = "Manager"
+    CUSTOMER = "Customer"
 
 
 class Customer(AbstractUser):
@@ -9,8 +17,10 @@ class Customer(AbstractUser):
     # username
     username = models.CharField(
         max_length=64,
+        choices=[(role, role.value) for role in CustomerType],
         blank=False,
         null=False,
+        unique=True,
         verbose_name="Username of Customer"
     )
     # first name
@@ -31,6 +41,7 @@ class Customer(AbstractUser):
     email = models.EmailField(
         blank=False,
         null=False,
+        unique=True,
         verbose_name="Email of Customer"
     )
     # password
@@ -49,6 +60,20 @@ class Customer(AbstractUser):
         null=False,
         verbose_name="Balance of Customer"
     )
+
+    def clean(self):
+        """
+        Check password on special symbols
+        :return:
+        """
+        # Special symbols, which one or more from this should be in password
+        special_symbols = "!@#$%^&*()-_+=[]{}|:;<>,.?/~"
+        # If the password contains one or more special symbols
+        if special_symbols in self.password:
+            # return validate password
+            return
+        # Else other case - raise ValidationError with message
+        raise ValidationError(message="Password must contain at least one special symbol")
 
     def __repr__(self):
         return self.username
@@ -72,7 +97,7 @@ class SaleHistoryOfCustomer(models.Model):
     )
     # car
     car = models.ForeignKey(
-        to="Car",
+        to="api.Car",
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -81,11 +106,11 @@ class SaleHistoryOfCustomer(models.Model):
     # price
     price = models.DecimalField(
         default=0.0,
-        max_digits=2,
-        decimal_places=8,
+        max_digits=8,
+        decimal_places=2,
         blank=False,
         null=False,
-        verbose_name="Price"
+        verbose_name="Price of Sale History"
     )
     # date of deal
     date = models.DateTimeField(

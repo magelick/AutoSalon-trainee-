@@ -11,6 +11,11 @@ redis = "*"
 flake8 = "*"
 pyjwt = "*"
 django = "*"
+django-countries = "*"
+pre-commit = "*"
+black = "*"
+mypy = "*"
+django-dynamic-fixture = "*"
 
 [dev-packages]
 
