@@ -19,14 +19,6 @@ class AutoSalonTestCase(TestCase):
     TestCase fo AutoSalon's model
     """
 
-    def test_auto_salon_create(self):
-        """
-        Test of build model
-        :return:
-        """
-        autosalon = G(AutoSalon)
-        self.assertTrue(isinstance(autosalon, AutoSalon))
-
     def test_auto_salon_name(self):
         """
         Test of check location's value

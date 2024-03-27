@@ -1,28 +1,28 @@
-name: 'Code checks'
-on:
-  push:
-  pull_request:
+name: 'Code checks'  # action name
+on:  # when work
+  push:  # for push-command
+  pull_request:  # for pull-request command
 
 jobs:
-  test-job:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
+  test-job:  # first job
+    runs-on: macos-latest   # what system will use
+    steps:  # steps in test-job
+    - uses: actions/checkout@v4  # checkout in working job
 
-    - name: 'install python'
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12'
+    - name: 'install python'  # action name
+      uses: actions/setup-python@v4  # some action
+      with:  # with python version work job
+        python-version: '3.12'  # v3.12
 
-    - name: 'install deps'
-      run: |
+    - name: 'install deps'  # action name
+      run: |  # commands
         python -m pip install pipenv
         pipenv install
 
-    - name: 'run flake8'
-      run: pipenv run flake8 --config .flake8
+    - name: 'run flake8'  # action name
+      run: pipenv run flake8 --config .flake8  # command
 
-    - name: 'run mypy'
-      run: cd autosalon && pipenv run mypy --ignore-missing-imports .
+    - name: 'run mypy'  # action name
+      run: cd autosalon && pipenv run mypy --ignore-missing-imports .  # command
 
 
