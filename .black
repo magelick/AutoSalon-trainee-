@@ -1,0 +1,12 @@
+[tool.black]
+# max length of string
+line-length = 79
+# what directory ignoring
+exclude = '''
+    Pipfile/
+    Pipfile.lock/
+    .pre-commit-config.yaml/
+    .flake8/
+    README.md/
+    .github/
+'''
