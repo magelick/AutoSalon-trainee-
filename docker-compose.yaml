@@ -1,0 +1,60 @@
+version: "3.9"  # version
+
+services:  # all services
+  app:  # app service
+    build:  # Dockerfile
+      context: .  # where locating
+      dockerfile: Dockerfile  # what name for this file
+    container_name: "autosalon"  # name service (container)
+    ports:  # service (container) ports
+      - "8001:8000"
+    logging:  # service (container) logs
+      options:  # option for log
+        max-size: '500M'  # max size log files
+        max-file: '5'  # max count of files
+    env_file:  # .env file with environments
+      - .env
+    command: python /app/autosalon/manage.py runserver 0.0.0.0:8000  # command for start work
+    restart: always  # always restart service (container) if his breakdown
+    volumes:  # connection your app's with workdir of service (container)
+      - .:/app
+    depends_on:  # what services (containers) this container depends on
+      - db
+      - redis
+      - celery-worker
+
+  db:  # db service
+    image: postgres:16.2-alpine3.19  # what image use for this service (container)
+    container_name: "autosalon-postgres"  # service (container) name
+    hostname: db  # hostname
+    restart: always  # always restart service (container) if his breakdown
+    volumes:  # connection your app's environment with service (container)'s environment
+      - .:/data/db/var/lib/postgresql/data
+    environment:  # environments
+      - POSTGRES_DB=autosalon
+      - POSTGRES_PASSWORD=1234567890
+      - POSTGRES_USER=admin1
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  redis:  # redis service
+    image: redis:7.2.4-alpine3.19  # what image use for this service (container)
+    container_name: "autosalon-redis"   # service (container) name
+    hostname: redis  # hostname
+    restart: always  # always restart service (container) if his breakdown
+
+  celery-worker:  # celery-worker service
+    image: "autosalon"  # what image use for this service (container)
+    build:  # Dockerfile
+      context: .   # where locating
+      dockerfile: Dockerfile  # what name for this file
+    container_name: "autosalon-celery-worker"  # service (container) name
+    env_file:  # .env file with environments
+      - .env
+    command: celery -A celery worker -l INFO  # command for start work
+    logging: # service (container) logs
+      options: # option for log
+        max-size: '500M'  # max size log files
+        max-file: '5'  # max count of files
+    restart: always  # always restart service (container) if his breakdown
+    volumes:  # connection your app's with workdir of service (container)
+      - .:/app
