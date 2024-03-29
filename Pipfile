@@ -17,6 +17,7 @@ black = "*"
 mypy = "*"
 django-dynamic-fixture = "*"
 django-stubs = "*"
+djangorestframework-stubs = "*"
 
 [dev-packages]
 
