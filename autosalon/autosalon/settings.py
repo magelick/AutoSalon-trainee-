@@ -33,6 +33,13 @@ AUTH_USER_MODEL = "users.Customer"
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379/2",
+    }
+}
+
 # Application definition
 
 INSTALLED_APPS = [
