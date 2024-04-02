@@ -67,6 +67,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "autosalon.urls"
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("users.auth.JWTAuthentication",),
+}
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

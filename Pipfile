@@ -18,6 +18,8 @@ mypy = "*"
 django-dynamic-fixture = "*"
 django-stubs = "*"
 djangorestframework-stubs = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
+types-passlib = "*"
 
 [dev-packages]
 
