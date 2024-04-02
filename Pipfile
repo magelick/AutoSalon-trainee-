@@ -20,6 +20,8 @@ django-stubs = "*"
 djangorestframework-stubs = "*"
 passlib = {extras = ["bcrypt"], version = "*"}
 types-passlib = "*"
+drf-spectacular = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 

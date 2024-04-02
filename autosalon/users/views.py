@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,6 +23,34 @@ from .utils import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of Customers",
+        description="Get list of all Customers",
+        tags=["Customer"],
+    ),
+    create=extend_schema(
+        summary="New Customer", description="Create new Customer", tags=["Customer"]
+    ),
+    retrieve=extend_schema(
+        summary="Get Customer", description="Get Customer by id", tags=["Customer"]
+    ),
+    update=extend_schema(
+        summary="Update Customer",
+        description="Update Customer by id",
+        tags=["Customer"],
+    ),
+    partial_update=extend_schema(
+        summary="Partial update Customer",
+        description="Partial update Customer by id",
+        tags=["Customer"],
+    ),
+    destroy=extend_schema(
+        summary="Delete Customer",
+        description="Delete Customer by id",
+        tags=["Customer"],
+    ),
+)
 class CustomerViewSet(ModelViewSet):
     """
     ViewSet for Customer model
@@ -33,16 +62,50 @@ class CustomerViewSet(ModelViewSet):
     queryset = Customer.instances.all()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of Sale Histories Of Customer",
+        description="Get list of all Sale Histories Of Customer",
+        tags=["Sale History Of Customer"],
+    ),
+    create=extend_schema(
+        summary="New Sale History Of Customer",
+        description="Create new Sale History Of Customer",
+        tags=["Sale History Of Customer"],
+    ),
+    retrieve=extend_schema(
+        summary="Get Sale History Of Customer",
+        description="Get Sale History Of Customer by id",
+        tags=["Sale History Of Customer"],
+    ),
+    update=extend_schema(
+        summary="Update Sale History Of Customer",
+        description="Update Sale History Of Customer by id",
+        tags=["Sale History Of Customer"],
+    ),
+    partial_update=extend_schema(
+        summary="Partial update Sale History Of Customer",
+        description="Partial update Sale History Of Customer by id",
+        tags=["Sale History Of Customer"],
+    ),
+    destroy=extend_schema(
+        summary="Delete Sale History Of Customer",
+        description="Delete Sale History Of Customer by id",
+        tags=["Sale History Of Customer"],
+    ),
+)
 class SaleHistoryOfCustomerViewSet(ModelViewSet):
     """
     ViewSet for SaleHistoryOfCustomer model
     """
+
     permission_classes = [IsAuthenticated]
 
     serializer_class = SaleHistoryOfCustomerSerializer
     queryset = SaleHistoryOfCustomer.objects.select_related("customer", "car").all()
 
 
+@extend_schema(tags=["Auth"])
 class RegisterViewSet(ModelViewSet):
     """
     ViewSet for register customer
@@ -50,6 +113,7 @@ class RegisterViewSet(ModelViewSet):
 
     serializer_class = CustomerSerializer
 
+    @extend_schema(summary="Register Customer")
     def create(self, request, *args, **kwargs):
         """
         Registration user
@@ -81,6 +145,7 @@ class RegisterViewSet(ModelViewSet):
         )
 
 
+@extend_schema(tags=["Auth"])
 class LoginViewSet(ModelViewSet):
     """
     ViewSet for login customer
@@ -88,6 +153,7 @@ class LoginViewSet(ModelViewSet):
 
     serializer_class = LoginSerializer
 
+    @extend_schema(summary="Login Customer")
     def create(self, request, *args, **kwargs):
         """
         Login user
@@ -119,6 +185,7 @@ class LoginViewSet(ModelViewSet):
         )
 
 
+@extend_schema(tags=["Auth"])
 class UpdateTokenViewSet(ModelViewSet):
     """
     ViewSet for update access token
@@ -126,6 +193,7 @@ class UpdateTokenViewSet(ModelViewSet):
 
     serializer_class = TokenSerializer
 
+    @extend_schema(summary="Update Access token")
     def create(self, request, *args, **kwargs):
         """
         Update token
