@@ -20,7 +20,7 @@ repos:
 
       - id: tests  # Identifier of hook
         name: tests  # Name of hook
-        entry: ./autosalon python manage.py test  # Command for start work hook
+        entry: ./autosalon python manage.py test api users # Command for start work hook
         language: system  # Hook will work with user command line system
         types:  # Define type of file for checking
           - python  # .py-files

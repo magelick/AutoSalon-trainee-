@@ -102,7 +102,7 @@ class SaleHistoryOfCustomerViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     serializer_class = SaleHistoryOfCustomerSerializer
-    queryset = SaleHistoryOfCustomer.objects.select_related("customer", "car").all()
+    queryset = SaleHistoryOfCustomer.sale_histories.all()
 
 
 @extend_schema(tags=["Auth"])
@@ -112,6 +112,9 @@ class RegisterViewSet(ModelViewSet):
     """
 
     serializer_class = CustomerSerializer
+
+    def get_queryset(self):
+        pass
 
     @extend_schema(summary="Register Customer")
     def create(self, request, *args, **kwargs):
@@ -153,6 +156,9 @@ class LoginViewSet(ModelViewSet):
 
     serializer_class = LoginSerializer
 
+    def get_queryset(self):
+        pass
+
     @extend_schema(summary="Login Customer")
     def create(self, request, *args, **kwargs):
         """
@@ -192,6 +198,9 @@ class UpdateTokenViewSet(ModelViewSet):
     """
 
     serializer_class = TokenSerializer
+
+    def get_queryset(self):
+        pass
 
     @extend_schema(summary="Update Access token")
     def create(self, request, *args, **kwargs):

@@ -1,12 +1,23 @@
 from django.db import models
 from django_countries import fields
 
+from .managers import (
+    AutoSalonManager,
+    CarManager,
+    OptionCarManager,
+    SupplierManager,
+    SaleHistoryManager,
+    SpecialOfferOfAutoSalonManager,
+    SpecialOfferOfSupplierManager,
+)
+
 
 class AutoSalon(models.Model):
     """
     Model of Autosalon
     """
 
+    autosalons = AutoSalonManager()
     # name
     name: models.CharField = models.CharField(
         max_length=128, blank=False, null=False, verbose_name="Name of Autosalon"
@@ -30,11 +41,17 @@ class AutoSalon(models.Model):
     )
     # suppliers
     suppliers: models.ManyToManyField = models.ManyToManyField(
-        to="Supplier", blank=False, verbose_name="Suppliers of AutoSalon"
+        to="Supplier",
+        related_name="autosalons",
+        blank=False,
+        verbose_name="Suppliers of AutoSalon",
     )
     # customers
     customers: models.ManyToManyField = models.ManyToManyField(
-        to="users.Customer", blank=False, verbose_name="Customers of AutoSalon"
+        to="users.Customer",
+        related_name="autosalons",
+        blank=False,
+        verbose_name="Customers of AutoSalon",
     )
 
     def __repr__(self):
@@ -43,6 +60,7 @@ class AutoSalon(models.Model):
     class Meta:
         verbose_name = "autosalon"
         verbose_name_plural = "autosalons"
+        app_label = "api"
 
 
 class Car(models.Model):
@@ -50,6 +68,7 @@ class Car(models.Model):
     Model of Car
     """
 
+    cars = CarManager()
     # model
     model_name: models.CharField = models.CharField(
         max_length=128, blank=False, null=False, verbose_name="Model of Car"
@@ -86,6 +105,7 @@ class OptionCar(models.Model):
     Class of Options for Car
     """
 
+    options = OptionCarManager()
     # year
     year: models.DateTimeField = models.DateTimeField(
         blank=False, null=False, verbose_name="Year of car"
@@ -180,6 +200,7 @@ class Supplier(models.Model):
     Class of Supplier
     """
 
+    suppliers = SupplierManager()
     # name
     name: models.CharField = models.CharField(
         max_length=128, blank=False, null=False, verbose_name="Name of Supplier"
@@ -214,6 +235,7 @@ class Supplier(models.Model):
     class Meta:
         verbose_name = "supplier"
         verbose_name_plural = "suppliers"
+        app_label = "api"
 
 
 class SaleHistory(models.Model):
@@ -221,6 +243,7 @@ class SaleHistory(models.Model):
     Class of Sale History between AutoSalons and Suppliers
     """
 
+    sale_histories = SaleHistoryManager()
     # autosalon
     autosalon: models.ForeignKey = models.ForeignKey(
         to="AutoSalon",
@@ -262,6 +285,7 @@ class SpecialOfferOfAutoSalon(models.Model):
     Class of special offer
     """
 
+    special_offer_of_autosalon = SpecialOfferOfAutoSalonManager()
     # name
     name: models.CharField = models.CharField(
         max_length=64, blank=False, null=False, verbose_name="Name of Special Offer"
@@ -311,6 +335,7 @@ class SpecialOfferOfSupplier(models.Model):
     Class of special offer
     """
 
+    special_offer_of_supplier = SpecialOfferOfSupplierManager()
     # name
     name: models.CharField = models.CharField(
         max_length=64, blank=False, null=False, verbose_name="Name of Special Offer"

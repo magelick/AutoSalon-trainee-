@@ -68,7 +68,7 @@ class AutoSalonViewSet(ViewSetCache):
     """
 
     serializer_class = AutoSalonSerializer
-    queryset = AutoSalon.objects.prefetch_related("suppliers", "customers").all()
+    queryset = AutoSalon.autosalons.all()
 
 
 @extend_schema_view(
@@ -101,7 +101,7 @@ class CarViewSet(ViewSetCache):
     """
 
     serializer_class = CarSerializer
-    queryset = Car.objects.prefetch_related("autosalons", "options").all()
+    queryset = Car.cars.all()
 
 
 @extend_schema_view(
@@ -140,7 +140,7 @@ class OptionCarViewSet(ViewSetCache):
     """
 
     serializer_class = OptionCarSerializer
-    queryset = OptionCar.objects.prefetch_related("cars").all()
+    queryset = OptionCar.options.all()
 
 
 @extend_schema_view(
@@ -177,7 +177,7 @@ class SupplierViewSet(ViewSetCache):
     """
 
     serializer_class = SupplierSerializer
-    queryset = Supplier.objects.prefetch_related("cars").all()
+    queryset = Supplier.suppliers.all()
 
 
 @extend_schema_view(
@@ -218,7 +218,7 @@ class SaleHistoryViewSet(ViewSetCache):
     """
 
     serializer_class = SaleHistorySerializer
-    queryset = SaleHistory.objects.select_related("autosalon", "supplier")
+    queryset = SaleHistory.sale_histories.all()
 
 
 @extend_schema_view(
@@ -259,7 +259,7 @@ class SpecialOfferOfAutoSalonViewSet(ViewSetCache):
     """
 
     serializer_class = SpecialOfferOfAutoSalonSerializer
-    queryset = SpecialOfferOfAutoSalon.objects.select_related("dealer").all()
+    queryset = SpecialOfferOfAutoSalon.special_offer_of_autosalon.all()
 
 
 @extend_schema_view(
@@ -300,4 +300,4 @@ class SpecialOfferOfSupplierViewSet(ViewSetCache):
     """
 
     serializer_class = SpecialOfferOfSupplierSerializer
-    queryset = SpecialOfferOfSupplier.objects.select_related("supplier").all()
+    queryset = SpecialOfferOfSupplier.special_offer_of_supplier.all()

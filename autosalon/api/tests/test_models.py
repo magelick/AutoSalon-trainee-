@@ -3,7 +3,7 @@ import datetime
 from django.test import TestCase
 from django_dynamic_fixture import G, F
 
-from .models import (
+from ..models import (
     AutoSalon,
     Car,
     OptionCar,

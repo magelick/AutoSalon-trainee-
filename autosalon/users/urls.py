@@ -12,13 +12,19 @@ from .views import (
 # initial default router
 router = DefaultRouter()
 # connect viewsets with router
-router.register(prefix="customers", viewset=CustomerViewSet)
-router.register(prefix="sale_histories", viewset=SaleHistoryOfCustomerViewSet)
+router.register(prefix="customers", viewset=CustomerViewSet, basename="customers")
+router.register(
+    prefix="sale_histories",
+    viewset=SaleHistoryOfCustomerViewSet,
+    basename="history_customers",
+)
+
+auth_router = DefaultRouter()
+auth_router.register(prefix="register", viewset=RegisterViewSet, basename="register")
+auth_router.register(prefix="login", viewset=LoginViewSet, basename="login")
+auth_router.register(
+    prefix="update_token", viewset=UpdateTokenViewSet, basename="update_token"
+)
 
 
-urlpatterns = [
-    path("v1/", include(router.urls)),
-    path("register/", RegisterViewSet.as_view({"post": "create"})),
-    path("login/", LoginViewSet.as_view({"post": "create"})),
-    path("update_token/", UpdateTokenViewSet.as_view({"post": "create"})),
-]
+urlpatterns = [path("v1/", include(router.urls)), path("", include(auth_router.urls))]
