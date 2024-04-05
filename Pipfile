@@ -23,6 +23,8 @@ types-passlib = "*"
 drf-spectacular = "*"
 django-debug-toolbar = "*"
 bcrypt = "*"
+pytest = "*"
+pytest-django = "*"
 
 [dev-packages]
 
