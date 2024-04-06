@@ -1,69 +1,8 @@
-from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
-
-class CustomManager(BaseUserManager):
-    """
-    Custom Class Manager
-    """
-
-    def create_customer(
-        self, username, email, password, first_name, last_name, balance=0.0
-    ):
-        """
-        Method of create customer
-        :param username:
-        :param email:
-        :param password:
-        :param first_name:
-        :param last_name:
-        :param balance:
-        :return:
-        """
-        if not email:
-            raise ValueError("Customers must have an email")
-
-        customer = self.model(
-            username=username,
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
-            balance=balance,
-        )
-
-        customer.set_password(password)
-        customer.save(using=self._db)
-        return customer
-
-    def create_superuser(
-        self,
-        email,
-        password,
-        username="admin",
-        first_name="admin",
-        last_name="admin",
-        balance=0.0,
-    ):
-        """
-        Method of create superuser
-        :param email:
-        :param password:
-        :param username:
-        :param first_name:
-        :param last_name:
-        :param balance:
-        :return:
-        """
-        customer = self.create_customer(
-            username, email, password, first_name, last_name, balance
-        )
-        customer.username = "admin"
-        customer.is_staff = True
-        customer.is_superuser = True
-        customer.save(using=self._db)
-        return customer
+from .managers import CustomManager, SaleHistoryOfCustomerManager
 
 
 class Customer(AbstractUser):
@@ -129,6 +68,7 @@ class Customer(AbstractUser):
     class Meta:
         verbose_name = "customer"
         verbose_name_plural = "customers"
+        app_label = "users"
 
 
 class SaleHistoryOfCustomer(models.Model):
@@ -136,6 +76,7 @@ class SaleHistoryOfCustomer(models.Model):
     Class of Sale History for Customer
     """
 
+    sale_histories = SaleHistoryOfCustomerManager()
     # customer
     customer: models.ForeignKey = models.ForeignKey(
         to="Customer",

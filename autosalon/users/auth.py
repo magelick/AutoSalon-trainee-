@@ -1,4 +1,5 @@
 import jwt
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
 
 from .models import Customer
 
@@ -62,3 +63,15 @@ class JWTAuthentication(BaseAuthentication):
         """
         # return signature Bearer
         return "Bearer"
+
+
+class JWTAuthenticationExtension(OpenApiAuthenticationExtension):
+    """
+    Extension class for JWTAuthentication in Swagger
+    """
+
+    name = "JWTAuth"
+    target_class = JWTAuthentication
+
+    def get_security_definition(self, auto_schema):
+        return {"type": "apiKey", "in": "header", "name": "Authorization"}
