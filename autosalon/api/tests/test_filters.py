@@ -7,7 +7,7 @@ from ..filters import (
     SupplierFilter,
     SaleHistoryFilter,
     SpecialOfferOfAutoSalonFilter,
-    SpecialOfferOfSupplierFilter
+    SpecialOfferOfSupplierFilter,
 )
 
 
@@ -96,7 +96,9 @@ def test_option_car_body_type(option_car_object):
 def test_option_car_transmission_type(option_car_object):
     data = {"transmission_type": "automatic"}
     filter_data = OptionCarFilter(data=data)
-    assert filter_data.qs.first().transmission_type == option_car_object.transmission_type
+    assert (
+        filter_data.qs.first().transmission_type == option_car_object.transmission_type
+    )
 
 
 @pytest.mark.django_db
@@ -179,7 +181,9 @@ def test_special_offer_of_autosalon_name(special_offer_of_autosalon_object):
 
 
 @pytest.mark.django_db
-def test_special_offer_of_autosalon_dealer(special_offer_of_autosalon_object, autosalon_object):
+def test_special_offer_of_autosalon_dealer(
+    special_offer_of_autosalon_object, autosalon_object
+):
     data = {"dealer__name": autosalon_object.name}
     filter_data = SpecialOfferOfAutoSalonFilter(data=data)
     assert filter_data.qs.first().dealer == special_offer_of_autosalon_object.dealer
@@ -196,7 +200,10 @@ def test_special_offer_of_autosalon_discount(special_offer_of_autosalon_object):
 def test_special_offer_of_autosalon_start_date(special_offer_of_autosalon_object):
     data = {"start_date": str(special_offer_of_autosalon_object.start_date.year)}
     filter_data = SpecialOfferOfAutoSalonFilter(data=data)
-    assert filter_data.qs.first().start_date == special_offer_of_autosalon_object.start_date
+    assert (
+        filter_data.qs.first().start_date
+        == special_offer_of_autosalon_object.start_date
+    )
 
 
 @pytest.mark.django_db
@@ -214,7 +221,9 @@ def test_special_offer_of_supplier_name(special_offer_of_supplier_object):
 
 
 @pytest.mark.django_db
-def test_special_offer_of_supplier_supplier(special_offer_of_supplier_object, supplier_object):
+def test_special_offer_of_supplier_supplier(
+    special_offer_of_supplier_object, supplier_object
+):
     data = {"supplier__name": supplier_object.name}
     filter_data = SpecialOfferOfSupplierFilter(data=data)
     assert filter_data.qs.first().supplier == special_offer_of_supplier_object.supplier
@@ -231,7 +240,9 @@ def test_special_offer_of_supplier_discount(special_offer_of_supplier_object):
 def test_special_offer_of_supplier_start_date(special_offer_of_supplier_object):
     data = {"start_date": str(special_offer_of_supplier_object.start_date.year)}
     filter_data = SpecialOfferOfSupplierFilter(data=data)
-    assert filter_data.qs.first().start_date == special_offer_of_supplier_object.start_date
+    assert (
+        filter_data.qs.first().start_date == special_offer_of_supplier_object.start_date
+    )
 
 
 @pytest.mark.django_db

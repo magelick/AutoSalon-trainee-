@@ -107,9 +107,7 @@ class AutoSaLonViewSetTestCase(APITestCase):
             path=reverse(viewname="autosalons-detail", args=[self.second_autosalon.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(
-            AutoSalon.objects.filter(id=self.second_autosalon.id).exists()
-        )
+        self.assertFalse(AutoSalon.objects.filter(id=self.second_autosalon.id).exists())
 
 
 class CarTestCase(APITestCase):
@@ -566,9 +564,7 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
             data=self.special_offer_of_autosalon_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        special_offer = SpecialOfferOfAutoSalon.objects.get(
-            name="Sale 70%"
-        )
+        special_offer = SpecialOfferOfAutoSalon.objects.get(name="Sale 70%")
         self.assertEqual(special_offer.name, "Sale 70%")
 
     def test_special_offer_of_autosalon_destroy(self):
@@ -580,9 +576,7 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(
-            SpecialOfferOfAutoSalon.objects.filter(
-                name="Sale 60%"
-            ).exists()
+            SpecialOfferOfAutoSalon.objects.filter(name="Sale 60%").exists()
         )
 
 
@@ -692,9 +686,7 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
             data=self.special_offer_of_supplier_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        special_offer = SpecialOfferOfSupplier.objects.get(
-            name="Sale 70%"
-        )
+        special_offer = SpecialOfferOfSupplier.objects.get(name="Sale 70%")
         self.assertEqual(special_offer.name, "Sale 70%")
 
     def test_special_offer_of_supplier_destroy(self):
@@ -706,7 +698,5 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(
-            SpecialOfferOfSupplier.objects.filter(
-                name="Sale 60%"
-            ).exists()
+            SpecialOfferOfSupplier.objects.filter(name="Sale 60%").exists()
         )

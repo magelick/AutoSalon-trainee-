@@ -32,21 +32,25 @@ def test_customer_email(customer_object):
 
 
 @pytest.mark.django_db
-def test_customer_first_name(customer_object):
+def test_customer_balance(customer_object):
     data = {"balance": 100000.00}
     filter_data = CustomerFilter(data=data)
     assert filter_data.qs.first().balance == customer_object.balance
 
 
 @pytest.mark.django_db
-def test_sale_history_of_customer_customer(sale_history_of_customer_object, customer_object):
+def test_sale_history_of_customer_customer(
+    sale_history_of_customer_object, customer_object
+):
     data = {"customer__first_name": customer_object.first_name}
     filter_data = SaleHistoryOfCustomerFilter(data=data)
     assert filter_data.qs.first().customer == sale_history_of_customer_object.customer
 
 
 @pytest.mark.django_db
-def test_sale_history_of_customer_car(sale_history_of_customer_object, second_car_object):
+def test_sale_history_of_customer_car(
+    sale_history_of_customer_object, second_car_object
+):
     data = {"car__model_name": second_car_object.model_name}
     filter_data = SaleHistoryOfCustomerFilter(data=data)
     assert filter_data.qs.first().car == sale_history_of_customer_object.car

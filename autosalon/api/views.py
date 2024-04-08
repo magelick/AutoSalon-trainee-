@@ -31,7 +31,7 @@ from .filters import (
     SupplierFilter,
     SaleHistoryFilter,
     SpecialOfferOfSupplierFilter,
-    SpecialOfferOfAutoSalonFilter
+    SpecialOfferOfAutoSalonFilter,
 )
 
 

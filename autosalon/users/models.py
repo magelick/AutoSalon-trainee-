@@ -1,5 +1,7 @@
+from typing import ClassVar, Self
+
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.exceptions import ValidationError
 
 from .managers import CustomManager, SaleHistoryOfCustomerManager
@@ -41,7 +43,7 @@ class Customer(AbstractUser):
         default=0.0, max_digits=10, decimal_places=2, verbose_name="Balance of Customer"
     )
     # use CustomManager as usual manager for Customer model
-    objects = CustomManager()
+    objects: ClassVar[UserManager[Self]] = CustomManager()  # type: ignore
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "password"]
