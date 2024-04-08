@@ -17,7 +17,7 @@ class AutoSalon(models.Model):
     Model of Autosalon
     """
 
-    autosalons = AutoSalonManager()
+    objects = AutoSalonManager()
     # name
     name: models.CharField = models.CharField(
         max_length=128, blank=False, null=False, verbose_name="Name of Autosalon"
@@ -29,7 +29,7 @@ class AutoSalon(models.Model):
     # balance
     balance: models.DecimalField = models.DecimalField(
         default=0,
-        max_digits=8,
+        max_digits=10,
         decimal_places=2,
         blank=True,
         null=False,
@@ -68,7 +68,7 @@ class Car(models.Model):
     Model of Car
     """
 
-    cars = CarManager()
+    objects = CarManager()
     # model
     model_name: models.CharField = models.CharField(
         max_length=128, blank=False, null=False, verbose_name="Model of Car"
@@ -105,7 +105,7 @@ class OptionCar(models.Model):
     Class of Options for Car
     """
 
-    options = OptionCarManager()
+    objects = OptionCarManager()
     # year
     year: models.DateTimeField = models.DateTimeField(
         blank=False, null=False, verbose_name="Year of car"
@@ -200,7 +200,7 @@ class Supplier(models.Model):
     Class of Supplier
     """
 
-    suppliers = SupplierManager()
+    objects = SupplierManager()
     # name
     name: models.CharField = models.CharField(
         max_length=128, blank=False, null=False, verbose_name="Name of Supplier"
@@ -211,7 +211,7 @@ class Supplier(models.Model):
     )
     # price of each cars
     price: models.DecimalField = models.DecimalField(
-        max_digits=8,
+        max_digits=10,
         decimal_places=2,
         blank=False,
         null=False,
@@ -243,7 +243,7 @@ class SaleHistory(models.Model):
     Class of Sale History between AutoSalons and Suppliers
     """
 
-    sale_histories = SaleHistoryManager()
+    objects = SaleHistoryManager()
     # autosalon
     autosalon: models.ForeignKey = models.ForeignKey(
         to="AutoSalon",
@@ -265,7 +265,7 @@ class SaleHistory(models.Model):
     # price
     price: models.DecimalField = models.DecimalField(
         default=0.0,
-        max_digits=8,
+        max_digits=10,
         decimal_places=2,
         blank=False,
         null=False,
@@ -285,7 +285,7 @@ class SpecialOfferOfAutoSalon(models.Model):
     Class of special offer
     """
 
-    special_offer_of_autosalon = SpecialOfferOfAutoSalonManager()
+    objects = SpecialOfferOfAutoSalonManager()
     # name
     name: models.CharField = models.CharField(
         max_length=64, blank=False, null=False, verbose_name="Name of Special Offer"
@@ -335,7 +335,7 @@ class SpecialOfferOfSupplier(models.Model):
     Class of special offer
     """
 
-    special_offer_of_supplier = SpecialOfferOfSupplierManager()
+    objects = SpecialOfferOfSupplierManager()
     # name
     name: models.CharField = models.CharField(
         max_length=64, blank=False, null=False, verbose_name="Name of Special Offer"

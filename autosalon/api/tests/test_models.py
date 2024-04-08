@@ -1,10 +1,9 @@
 import datetime
-import os
 
 from django.test import TestCase
 from django_dynamic_fixture import G, F
 
-from api.models import (
+from ..models import (
     AutoSalon,
     Car,
     OptionCar,
@@ -13,8 +12,6 @@ from api.models import (
     SpecialOfferOfSupplier,
     SpecialOfferOfAutoSalon,
 )
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "autosalon.test_settings")
 
 
 class AutoSalonTestCase(TestCase):

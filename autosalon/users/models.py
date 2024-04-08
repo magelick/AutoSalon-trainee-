@@ -38,10 +38,10 @@ class Customer(AbstractUser):
     )
     # balance
     balance: models.DecimalField = models.DecimalField(
-        default=0.0, max_digits=8, decimal_places=2, verbose_name="Balance of Customer"
+        default=0.0, max_digits=10, decimal_places=2, verbose_name="Balance of Customer"
     )
     # use CustomManager as usual manager for Customer model
-    instances = CustomManager()
+    objects = CustomManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "password"]
@@ -76,7 +76,7 @@ class SaleHistoryOfCustomer(models.Model):
     Class of Sale History for Customer
     """
 
-    sale_histories = SaleHistoryOfCustomerManager()
+    objects = SaleHistoryOfCustomerManager()
     # customer
     customer: models.ForeignKey = models.ForeignKey(
         to="Customer",
@@ -96,7 +96,7 @@ class SaleHistoryOfCustomer(models.Model):
     # price
     price: models.DecimalField = models.DecimalField(
         default=0.0,
-        max_digits=8,
+        max_digits=10,
         decimal_places=2,
         blank=False,
         null=False,
