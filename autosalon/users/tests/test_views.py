@@ -81,7 +81,7 @@ class CustomerTestCase(APITestCase):
             data=self.customer_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        customer = Customer.instances.get(first_name="Cristiano")
+        customer = Customer.objects.get(first_name="Cristiano")
         self.assertEqual(customer.first_name, "Cristiano")
 
     def test_customer_destroy(self):
@@ -89,7 +89,7 @@ class CustomerTestCase(APITestCase):
             path=reverse(viewname="customers-detail", args=[self.first_customer.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Customer.instances.filter(first_name="Vladimir").exists())
+        self.assertFalse(Customer.objects.filter(first_name="Vladimir").exists())
 
 
 class SaleHistoryOfCustomerTestCase(APITestCase):

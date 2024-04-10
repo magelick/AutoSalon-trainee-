@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_filters",
     "django_countries",
     "drf_spectacular",
     "debug_toolbar",
@@ -73,6 +74,7 @@ ROOT_URLCONF = "autosalon.urls"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("users.auth.JWTAuthentication",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 TEMPLATES = [

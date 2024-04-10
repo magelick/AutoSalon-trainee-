@@ -25,6 +25,7 @@ django-debug-toolbar = "*"
 bcrypt = "*"
 pytest = "*"
 pytest-django = "*"
+django-filter = "*"
 
 [dev-packages]
 

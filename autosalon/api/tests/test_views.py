@@ -82,7 +82,7 @@ class AutoSaLonViewSetTestCase(APITestCase):
             path=reverse(viewname="autosalons-list"), data=self.autosalon_data
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        autosalon = AutoSalon.autosalons.get(name="Test Autosalon")
+        autosalon = AutoSalon.objects.get(name="Test Autosalon")
         self.assertEqual(response.data["name"], autosalon.name)
 
     def test_autosalon_retrieve(self):
@@ -99,7 +99,7 @@ class AutoSaLonViewSetTestCase(APITestCase):
             data=self.autosalon_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        autosalon = AutoSalon.autosalons.get(id=self.first_autosalon.id)
+        autosalon = AutoSalon.objects.get(id=self.first_autosalon.id)
         self.assertEqual(autosalon.name, "Test Autosalon")
 
     def test_autosalon_destroy(self):
@@ -107,9 +107,7 @@ class AutoSaLonViewSetTestCase(APITestCase):
             path=reverse(viewname="autosalons-detail", args=[self.second_autosalon.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(
-            AutoSalon.autosalons.filter(id=self.second_autosalon.id).exists()
-        )
+        self.assertFalse(AutoSalon.objects.filter(id=self.second_autosalon.id).exists())
 
 
 class CarTestCase(APITestCase):
@@ -181,7 +179,7 @@ class CarTestCase(APITestCase):
             data=self.car_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        car = Car.cars.get(id=self.first_car.id)
+        car = Car.objects.get(id=self.first_car.id)
         self.assertEqual(car.model_name, "Lamborghini Huracan Performance")
 
     def test_car_destroy(self):
@@ -189,7 +187,7 @@ class CarTestCase(APITestCase):
             path=reverse(viewname="cars-detail", args=[self.second_car.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(AutoSalon.autosalons.filter(id=self.second_car.id).exists())
+        self.assertFalse(Car.objects.filter(id=self.second_car.id).exists())
 
 
 class OptionCarTestCase(APITestCase):
@@ -282,7 +280,7 @@ class OptionCarTestCase(APITestCase):
             data=self.option_car_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        option_car = OptionCar.options.get(mileage=120000)
+        option_car = OptionCar.objects.get(mileage=120000)
         self.assertEqual(option_car.mileage, 120000)
 
     def test_option_car_destroy(self):
@@ -290,7 +288,7 @@ class OptionCarTestCase(APITestCase):
             path=reverse(viewname="options-detail", args=[self.third_option_car.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(OptionCar.options.filter(body_type="suv").exists())
+        self.assertFalse(OptionCar.objects.filter(body_type="suv").exists())
 
 
 class SupplierTestCase(APITestCase):
@@ -365,7 +363,7 @@ class SupplierTestCase(APITestCase):
             data=self.supplier_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK),
-        supplier = Supplier.suppliers.get(name="Test Supplier")
+        supplier = Supplier.objects.get(name="Test Supplier")
         self.assertEqual(supplier.name, "Test Supplier")
 
     def test_supplier_destroy(self):
@@ -373,7 +371,7 @@ class SupplierTestCase(APITestCase):
             path=reverse(viewname="suppliers-detail", args=[self.third_supplier.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Supplier.suppliers.filter(name="CarHouse").exists())
+        self.assertFalse(Supplier.objects.filter(name="CarHouse").exists())
 
 
 class SaleHistoryTestCase(APITestCase):
@@ -457,7 +455,7 @@ class SaleHistoryTestCase(APITestCase):
             data=self.sale_history_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        sale_history = SaleHistory.sale_histories.get(price=25000.00)
+        sale_history = SaleHistory.objects.get(price=25000.00)
         self.assertEqual(sale_history.price, 25000.00)
 
     def test_sale_history_destroy(self):
@@ -465,7 +463,7 @@ class SaleHistoryTestCase(APITestCase):
             path=reverse(viewname="histories-detail", args=[self.third_sale_history.id])
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(SaleHistory.sale_histories.filter(price=35000.00).exists())
+        self.assertFalse(SaleHistory.objects.filter(price=35000.00).exists())
 
 
 class SpecialOfferOfAutoSalonTestCase(APITestCase):
@@ -566,9 +564,7 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
             data=self.special_offer_of_autosalon_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        special_offer = SpecialOfferOfAutoSalon.special_offer_of_autosalon.get(
-            name="Sale 70%"
-        )
+        special_offer = SpecialOfferOfAutoSalon.objects.get(name="Sale 70%")
         self.assertEqual(special_offer.name, "Sale 70%")
 
     def test_special_offer_of_autosalon_destroy(self):
@@ -580,9 +576,7 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(
-            SpecialOfferOfAutoSalon.special_offer_of_autosalon.filter(
-                name="Sale 60%"
-            ).exists()
+            SpecialOfferOfAutoSalon.objects.filter(name="Sale 60%").exists()
         )
 
 
@@ -692,9 +686,7 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
             data=self.special_offer_of_supplier_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        special_offer = SpecialOfferOfSupplier.special_offer_of_supplier.get(
-            name="Sale 70%"
-        )
+        special_offer = SpecialOfferOfSupplier.objects.get(name="Sale 70%")
         self.assertEqual(special_offer.name, "Sale 70%")
 
     def test_special_offer_of_supplier_destroy(self):
@@ -706,7 +698,5 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(
-            SpecialOfferOfSupplier.special_offer_of_supplier.filter(
-                name="Sale 60%"
-            ).exists()
+            SpecialOfferOfSupplier.objects.filter(name="Sale 60%").exists()
         )

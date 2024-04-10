@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -6,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Customer, SaleHistoryOfCustomer
+
+from .filters import CustomerFilter, SaleHistoryOfCustomerFilter
 
 from .serializers import (
     CustomerSerializer,
@@ -59,7 +62,9 @@ class CustomerViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     serializer_class = CustomerSerializer
-    queryset = Customer.instances.all()
+    queryset = Customer.objects.all()
+    filterset_class = CustomerFilter
+    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -102,7 +107,9 @@ class SaleHistoryOfCustomerViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     serializer_class = SaleHistoryOfCustomerSerializer
-    queryset = SaleHistoryOfCustomer.sale_histories.all()
+    queryset = SaleHistoryOfCustomer.objects.all()
+    filterset_class = SaleHistoryOfCustomerFilter
+    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema(tags=["Auth"])
