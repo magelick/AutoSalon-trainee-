@@ -32,6 +32,7 @@ AUTH_USER_MODEL = "users.Customer"
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+CELERY_IMPORTS = ("tasks",)
 
 CACHES = {
     "default": {
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "api.apps.ApiConfig",
     "users.apps.UsersConfig",
+    "celery",
 ]
 
 MIDDLEWARE = [

@@ -21,7 +21,6 @@ services:  # all services
     depends_on:  # what services (containers) this container depends on
       - db
       - redis
-      - celery-worker
 
   db:  # db service
     image: postgres:16.2-alpine3.19  # what image use for this service (container)
@@ -50,7 +49,7 @@ services:  # all services
     container_name: "autosalon-celery-worker"  # service (container) name
     env_file:  # .env file with environments
       - .env
-    command: celery -A celery worker -l INFO  # command for start work
+    command: celery -A celery worker -E -l INFO  # command for start work
     logging: # service (container) logs
       options: # option for log
         max-size: '500M'  # max size log files
@@ -58,3 +57,43 @@ services:  # all services
     restart: always  # always restart service (container) if his breakdown
     volumes:  # connection your app's with workdir of service (container)
       - .:/app
+    depends_on:
+      - redis
+
+  celery-beat: # celery-flower service
+    image: "autosalon"  # what image use for this service (container)
+    build: # Dockerfile
+      context: .   # where locating
+      dockerfile: Dockerfile  # what name for this file
+    container_name: "autosalon-celery-beat"  # service (container) name
+    env_file: # .env file with environments
+      - .env
+    command: celery -A celery beat -l INFO # command for start work
+    logging: # service (container) logs
+      options: # option for log
+        max-size: '500M'  # max size log files
+        max-file: '5'  # max count of files
+    restart: always  # always restart service (container) if his breakdown
+    volumes: # connection your app's with workdir of service (container)
+      - .:/app
+    depends_on:
+      - celery-worker
+
+  celery-flower: # celery-flower service
+    image: "autosalon"  # what image use for this service (container)
+    build: # Dockerfile
+      context: .   # where locating
+      dockerfile: Dockerfile  # what name for this file
+    container_name: "autosalon-celery-flower"  # service (container) name
+    env_file: # .env file with environments
+      - .env
+    command: celery -A celery flower --port=5555  # command for start work
+    logging: # service (container) logs
+      options: # option for log
+        max-size: '500M'  # max size log files
+        max-file: '5'  # max count of files
+    restart: always  # always restart service (container) if his breakdown
+    volumes: # connection your app's with workdir of service (container)
+      - .:/app
+    depends_on:
+      - celery-worker
