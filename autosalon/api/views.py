@@ -1,6 +1,9 @@
+from django.db.models import Count, Sum, Max, Min
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.cache import cache_page
 
@@ -326,3 +329,129 @@ class SpecialOfferOfSupplierViewSet(ViewSetCache):
     queryset = SpecialOfferOfSupplier.objects.all()
     filterset_class = SpecialOfferOfSupplierFilter
     filter_backends = (DjangoFilterBackend,)
+
+
+@extend_schema(tags=["Stats"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of AutoSalon stats",
+        description="Get list of all autosalon stats",
+        tags=["AutoSalon stats"],
+    )
+)
+class AutoSalonStatsViewSet(ModelViewSet):
+    """
+    StatsViewSet for AutoSalon's model
+    """
+
+    def list(self, request, *args, **kwargs):
+        # Get list autosalons with count their suppliers
+        suppliers_count = AutoSalon.objects.annotate(
+            car_sold=Count("supplier", distinct=True)
+        ).values("name", "suppliers_count")
+        # Get list autosalons with count their cars
+        cars_count = AutoSalon.objects.annotate(cars_count=Count("cars")).values(
+            "name", "cars_count"
+        )
+        # Get list autosalons with their total balance
+        total_price = AutoSalon.objects.annotate(total_price=Sum("balance")).values(
+            "name", "total_price"
+        )
+        # Get list autosalons with their special cusotmers
+        special_customers = AutoSalon.objects.annotate(
+            special_customers=Count("customers", distinct=True)
+        ).values("name", "special_customers")
+        # Get list autosalons with their max and min prices
+        car_price = AutoSalon.objects.annotate(
+            max_price=Max("suppliers__price"), min_price=Min("supplier__price")
+        ).values("name", "max_price", "min_price")
+        # Get list autosalons with their count of sale histories
+        sale_history_count = AutoSalon.objects.annotate(
+            sale_histories=Count("sale_history", distinct=True)
+        ).values("name", "sale_histories")
+        # Get list autosalons with their max and min prices in sale histories
+        prices_in_sale_histories = AutoSalon.objects.annotate(
+            max_price_in_history=Max("sale_history__price"),
+            min_price_in_history=Min("sale_history__price"),
+        ).values("name", "max_price_in_history", "min_price_in_history")
+        # Define serializers
+        suppliers_count_serializer = AutoSalonSerializer(suppliers_count, many=True)
+        cars_count_serializer = AutoSalonSerializer(cars_count, many=True)
+        total_price_serializer = AutoSalonSerializer(total_price, many=True)
+        special_customers_serializer = AutoSalonSerializer(special_customers, many=True)
+        car_price_serializer = AutoSalonSerializer(car_price, many=True)
+        sale_history_count_serializer = AutoSalonSerializer(
+            sale_history_count, many=True
+        )
+        prices_in_sale_histories_serializer = AutoSalonSerializer(
+            prices_in_sale_histories, many=True
+        )
+        # Define response data
+        response_data = {
+            "suppliers_count": suppliers_count_serializer,
+            "cars_count": cars_count_serializer,
+            "total_price": total_price_serializer,
+            "special_customers": special_customers_serializer,
+            "car_price": car_price_serializer,
+            "sale_history_count": sale_history_count_serializer,
+            "prices_in_sale_histories": prices_in_sale_histories_serializer,
+        }
+        # return Response
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+@extend_schema(tags=["Stats"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of Supplier stats",
+        description="Get list of all supplier stats",
+        tags=["Supplier stats"],
+    )
+)
+class SupplierStatsViewSet(ModelViewSet):
+    """
+    StatsViewSet for Supplier's model
+    """
+
+    def list(self, request, *args, **kwargs):
+        # Get list suppliers with their max and mib prices
+        total_prices = Supplier.objects.annotate(
+            max_price=Max("price"), min_price=Min("price")
+        ).values("name", "max_price", "min_price")
+        # Get list suppliers with count their autosalons
+        autosalons_count = Supplier.objects.annotate(
+            autosalons=Count("autosalons", distinct=True)
+        ).values("name", "autosalons")
+        # Get list suppliers with count their cars
+        cars_count = Supplier.objects.annotate(
+            cars=Count("cars", distinct=True)
+        ).values("name", "cars")
+        # Get list suppliers with count their sale histories
+        sale_history_count = Supplier.objects.annotate(
+            sale_histories=Count("sale_history", distinct=True)
+        ).values("name", "sale_histories")
+        # Get list suppliers with max and min prices in their sale histories
+        prices_in_sale_histories = Supplier.objects.annotate(
+            max_price_in_history=Max("sale_history__price"),
+            min_price_in_history=Min("sale_history__price"),
+        ).values("name", "max_price_in_history", "min_price_in_history")
+        # Define serializers
+        total_prices_serializer = SupplierSerializer(total_prices, many=True)
+        autosalons_count_serializer = SupplierSerializer(autosalons_count, many=True)
+        cars_count_serializer = SupplierSerializer(cars_count, many=True)
+        sale_history_count_serializer = SupplierSerializer(
+            sale_history_count, many=True
+        )
+        prices_in_sale_histories_serializer = SupplierSerializer(
+            prices_in_sale_histories, many=True
+        )
+        # Define response data
+        response_data = {
+            "total_prices": total_prices_serializer,
+            "autosalons_count": autosalons_count_serializer,
+            "cars_count": cars_count_serializer,
+            "sale_history_count": sale_history_count_serializer,
+            "prices_in_sale_histories": prices_in_sale_histories_serializer,
+        }
+        # return Response
+        return Response(response_data)

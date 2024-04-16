@@ -1,3 +1,4 @@
+from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
@@ -238,3 +239,67 @@ class UpdateTokenViewSet(ModelViewSet):
         access_token = create_access_token(sub=customer_email)
         # return Response with new access token
         return Response({"access_token": access_token}, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(tags=["Stats"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of Supplier stats",
+        description="Get list of all supplier stats",
+        tags=["Supplier stats"],
+    )
+)
+class CustomerStatsViewSet(ModelViewSet):
+    """
+    StatsViewSet for Customer's model
+    """
+
+    def list(self, request, *args, **kwargs):
+        # Get list customers with count admins
+        admin_count = (
+            Customer.objects.annotate(username=Count("username", distinct=True))
+            .filter(username="admin")
+            .values("username", "email")
+        )
+        # Get list customers with count managers
+        manager_count = (
+            Customer.objects.annotate(username=Count("username", distinct=True))
+            .filter(username="manager")
+            .values("username", "email")
+        )
+        # Get list customers with count empty customers
+        customer_count = (
+            Customer.objects.annotate(username=Count("username", distinct=True))
+            .filter(username="customer")
+            .values("username", "email")
+        )
+        # Get list customers with count their emails
+        email_count = Customer.objects.annotate(
+            email_count=Count("email"), distinct=True
+        )
+        # Get list customers with their total balance
+        total_balance = Customer.objects.annotate(
+            total_balance=Sum("balance"), distinct=True
+        ).values("email", "total_balance")
+        # Get list customers with count their autosalons
+        autosalons_count = Customer.objects.annotate(
+            autosalons_count=Count("autosalons", distinct=True)
+        ).values("email", "autosalons_count")
+        # Define serializers
+        admin_count_serializer = CustomerSerializer(admin_count, many=True)
+        manager_count_serializer = CustomerSerializer(manager_count, many=True)
+        customer_count_serializer = CustomerSerializer(customer_count, many=True)
+        email_count_serializer = CustomerSerializer(email_count, many=True)
+        total_balance_serializer = CustomerSerializer(total_balance, many=True)
+        autosalons_count_serializer = CustomerSerializer(autosalons_count, many=True)
+        # Define reponse data
+        response_data = {
+            "admin_count": admin_count_serializer,
+            "manager_count": manager_count_serializer,
+            "customer_count": customer_count_serializer,
+            "email_count": email_count_serializer,
+            "total_balance": total_balance_serializer,
+            "autosalons_count": autosalons_count_serializer,
+        }
+        # return Response
+        return Response(response_data, status=status.HTTP_200_OK)
