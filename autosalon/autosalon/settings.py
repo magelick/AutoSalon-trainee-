@@ -33,6 +33,15 @@ AUTH_USER_MODEL = "users.Customer"
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.ethereal.email"
+EMAIL_HOST_USER = "mariam.frami@ethereal.email"
+EMAIL_HOST_PASSWORD = "fMnbAtaGPQ7qcepXar"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
