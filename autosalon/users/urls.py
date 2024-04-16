@@ -8,7 +8,7 @@ from .views import (
     LoginViewSet,
     UpdateTokenViewSet,
     PasswordUpdateViewSet,
-    EmailUpdateViewSet
+    EmailUpdateViewSet,
 )
 
 # initial default router

@@ -51,6 +51,7 @@ class PasswordSerializer(ModelSerializer):
     """
     Serializer for PasswordUpdateViewSet
     """
+
     new_password = CharField()
 
     class Meta:
@@ -63,6 +64,7 @@ class EmailSerializer(ModelSerializer):
     """
     Serializer for EmailUpdateViewSet
     """
+
     new_email = CharField()
 
     class Meta:

@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -18,7 +17,7 @@ from .serializers import (
     LoginSerializer,
     TokenSerializer,
     PasswordSerializer,
-    EmailSerializer
+    EmailSerializer,
 )
 
 from .utils import (
@@ -311,6 +310,7 @@ class PasswordUpdateViewSet(ModelViewSet):
     """
     ViewSet for update customer password
     """
+
     serializer_class = PasswordSerializer
 
     def get_queryset(self):
@@ -330,7 +330,9 @@ class PasswordUpdateViewSet(ModelViewSet):
         if not email:
             return Response("Email wasn't declared", status=status.HTTP_403_FORBIDDEN)
         if not new_password:
-            return Response("Password wasn't declared", status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                "Password wasn't declared", status=status.HTTP_403_FORBIDDEN
+            )
         # get customer by email
         customer = get_object_or_404(Customer, email=email)
         # create new password for customer
@@ -371,6 +373,7 @@ class EmailUpdateViewSet(ModelViewSet):
     """
     ViewSet for update customer email
     """
+
     serializer_class = EmailSerializer
 
     def get_queryset(self):

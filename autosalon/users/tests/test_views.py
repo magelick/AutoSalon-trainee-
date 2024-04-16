@@ -282,11 +282,13 @@ class PasswordUpdateTestCase(APITestCase):
 
         self.data = {
             "email": "zhirikpushka@gmail.com",
-            "new_password": "russiavsegdatop"
+            "new_password": "russiavsegdatop",
         }
 
     def test_password_update(self):
-        response = self.client.post(path=reverse(viewname="password_update-list"), data=self.data)
+        response = self.client.post(
+            path=reverse(viewname="password_update-list"), data=self.data
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
@@ -308,9 +310,11 @@ class EmailUpdateTestCase(APITestCase):
 
         self.data = {
             "email": "zhirikpushka@gmail.com",
-            "new_email": "zhirikpushka2022@gmail.com"
+            "new_email": "zhirikpushka2022@gmail.com",
         }
 
     def test_password_update(self):
-        response = self.client.post(path=reverse(viewname="email_update-list"), data=self.data)
+        response = self.client.post(
+            path=reverse(viewname="email_update-list"), data=self.data
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
