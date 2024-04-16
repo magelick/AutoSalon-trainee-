@@ -249,6 +249,7 @@ class PasswordUpdate(ModelViewSet):
     """
     ViewSet for update customer password
     """
+
     def create(self, request, *args, **kwargs):
         """
         Password user update
@@ -260,20 +261,22 @@ class PasswordUpdate(ModelViewSet):
         password = request.data["password"]
         # if not data password, return Message Response
         if not password:
-            return Response("Password wasn't declared", status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                "Password wasn't declared", status=status.HTTP_403_FORBIDDEN
+            )
         # get customer by email
         customer = get_object_or_404(Customer, email=email)
         # create new password for customer
-        new_password = create_hash_password(
-            password=password
-        )
+        new_password = create_hash_password(password=password)
         # changing and saving new customer password
         customer.password = new_password
         customer.save()
         # confirmation email
         send_confirmation_email.delay(email=customer.email)
         # return Response
-        return Response({"password": "Password succesfuly updated"}, status=status.HTTP_200_OK)
+        return Response(
+            {"password": "Password succesfuly updated"}, status=status.HTTP_200_OK
+        )
 
 
 @extend_schema(tags=["Auth"])
@@ -281,6 +284,7 @@ class EmailUpdate(ModelViewSet):
     """
     ViewSet for update customer email
     """
+
     def create(self, request, *args, **kwargs):
         """
         Password user update
@@ -295,7 +299,9 @@ class EmailUpdate(ModelViewSet):
             return Response("Email wasn't declared", status=status.HTTP_403_FORBIDDEN)
         # if not new email, return Response
         if not new_email:
-            return Response("New email wasn't declared", status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                "New email wasn't declared", status=status.HTTP_403_FORBIDDEN
+            )
         # get customer by email
         customer = get_object_or_404(Customer, email=email)
         # update customer email on new email
@@ -304,4 +310,6 @@ class EmailUpdate(ModelViewSet):
         # confirmation email
         send_confirmation_email.delay(customer.email)
         # return Response
-        return Response({"email": "Email succesfuly updated"}, status=status.HTTP_200_OK)
+        return Response(
+            {"email": "Email succesfuly updated"}, status=status.HTTP_200_OK
+        )
