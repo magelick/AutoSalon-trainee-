@@ -31,7 +31,7 @@ auth_router.register(
 stats_router = DefaultRouter()
 # connect viewsets with router
 stats_router.register(
-    prefix="customer/", viewset=CustomerStatsViewSet, basename="customer_stats"
+    prefix="customer", viewset=CustomerStatsViewSet, basename="customer_stats"
 )
 
 

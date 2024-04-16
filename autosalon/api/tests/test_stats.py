@@ -1,11 +1,14 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APIClient
 
 
 @pytest.mark.django_db
-def test_autosalon_stats_list(self):
-    response = self.client.get(path=reverse(viewname="autosalon_stats"))
+def test_autosalon_stats_list():
+    client = APIClient()
+    response = client.get(path=reverse(viewname="autosalon_stats-list"))
+
     assert response.status_code == status.HTTP_200_OK
     assert "suppliers_count" in response.data
     assert "cars_count" in response.data
@@ -17,8 +20,10 @@ def test_autosalon_stats_list(self):
 
 
 @pytest.mark.django_db
-def test_supplier_stats_list(self):
-    response = self.client.get(path=reverse(viewname="supplier_stats"))
+def test_supplier_stats_list():
+    client = APIClient()
+    response = client.get(path=reverse(viewname="supplier_stats-list"))
+
     assert response.status_code == status.HTTP_200_OK
     assert "total_prices" in response.data
     assert "autosalons_count" in response.data

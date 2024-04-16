@@ -254,44 +254,48 @@ class CustomerStatsViewSet(ModelViewSet):
     StatsViewSet for Customer's model
     """
 
+    serializer_class = CustomerSerializer
+
     def list(self, request, *args, **kwargs):
         # Get list customers with count admins
         admin_count = (
-            Customer.objects.annotate(username=Count("username", distinct=True))
+            Customer.objects.annotate(admin_count=Count("username", distinct=True))
             .filter(username="admin")
-            .values("username", "email")
+            .values("admin_count", "email")
         )
         # Get list customers with count managers
         manager_count = (
-            Customer.objects.annotate(username=Count("username", distinct=True))
+            Customer.objects.annotate(manager_count=Count("username", distinct=True))
             .filter(username="manager")
-            .values("username", "email")
+            .values("manager_count", "email")
         )
         # Get list customers with count empty customers
         customer_count = (
-            Customer.objects.annotate(username=Count("username", distinct=True))
+            Customer.objects.annotate(customer_count=Count("username", distinct=True))
             .filter(username="customer")
-            .values("username", "email")
+            .values("customer_count", "email")
         )
         # Get list customers with count their emails
         email_count = Customer.objects.annotate(
-            email_count=Count("email"), distinct=True
+            email_count=Count("email", distinct=True)
         )
         # Get list customers with their total balance
-        total_balance = Customer.objects.annotate(
-            total_balance=Sum("balance"), distinct=True
-        ).values("email", "total_balance")
+        total_balance = Customer.objects.annotate(total_balance=Sum("balance")).values(
+            "email", "total_balance"
+        )
         # Get list customers with count their autosalons
         autosalons_count = Customer.objects.annotate(
             autosalons_count=Count("autosalons", distinct=True)
         ).values("email", "autosalons_count")
         # Define serializers
-        admin_count_serializer = CustomerSerializer(admin_count, many=True)
-        manager_count_serializer = CustomerSerializer(manager_count, many=True)
-        customer_count_serializer = CustomerSerializer(customer_count, many=True)
-        email_count_serializer = CustomerSerializer(email_count, many=True)
-        total_balance_serializer = CustomerSerializer(total_balance, many=True)
-        autosalons_count_serializer = CustomerSerializer(autosalons_count, many=True)
+        admin_count_serializer = CustomerSerializer(admin_count, many=True).data
+        manager_count_serializer = CustomerSerializer(manager_count, many=True).data
+        customer_count_serializer = CustomerSerializer(customer_count, many=True).data
+        email_count_serializer = CustomerSerializer(email_count, many=True).data
+        total_balance_serializer = CustomerSerializer(total_balance, many=True).data
+        autosalons_count_serializer = CustomerSerializer(
+            autosalons_count, many=True
+        ).data
         # Define reponse data
         response_data = {
             "admin_count": admin_count_serializer,
@@ -303,3 +307,19 @@ class CustomerStatsViewSet(ModelViewSet):
         }
         # return Response
         return Response(response_data, status=status.HTTP_200_OK)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

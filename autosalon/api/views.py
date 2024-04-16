@@ -344,10 +344,12 @@ class AutoSalonStatsViewSet(ModelViewSet):
     StatsViewSet for AutoSalon's model
     """
 
+    serializer_class = AutoSalonSerializer
+
     def list(self, request, *args, **kwargs):
         # Get list autosalons with count their suppliers
         suppliers_count = AutoSalon.objects.annotate(
-            car_sold=Count("supplier", distinct=True)
+            suppliers_count=Count("suppliers", distinct=True)
         ).values("name", "suppliers_count")
         # Get list autosalons with count their cars
         cars_count = AutoSalon.objects.annotate(cars_count=Count("cars")).values(
@@ -363,7 +365,7 @@ class AutoSalonStatsViewSet(ModelViewSet):
         ).values("name", "special_customers")
         # Get list autosalons with their max and min prices
         car_price = AutoSalon.objects.annotate(
-            max_price=Max("suppliers__price"), min_price=Min("supplier__price")
+            max_price=Max("suppliers__price"), min_price=Min("suppliers__price")
         ).values("name", "max_price", "min_price")
         # Get list autosalons with their count of sale histories
         sale_history_count = AutoSalon.objects.annotate(
@@ -375,17 +377,21 @@ class AutoSalonStatsViewSet(ModelViewSet):
             min_price_in_history=Min("sale_history__price"),
         ).values("name", "max_price_in_history", "min_price_in_history")
         # Define serializers
-        suppliers_count_serializer = AutoSalonSerializer(suppliers_count, many=True)
-        cars_count_serializer = AutoSalonSerializer(cars_count, many=True)
-        total_price_serializer = AutoSalonSerializer(total_price, many=True)
-        special_customers_serializer = AutoSalonSerializer(special_customers, many=True)
-        car_price_serializer = AutoSalonSerializer(car_price, many=True)
+        suppliers_count_serializer = AutoSalonSerializer(
+            suppliers_count, many=True
+        ).data
+        cars_count_serializer = AutoSalonSerializer(cars_count, many=True).data
+        total_price_serializer = AutoSalonSerializer(total_price, many=True).data
+        special_customers_serializer = AutoSalonSerializer(
+            special_customers, many=True
+        ).data
+        car_price_serializer = AutoSalonSerializer(car_price, many=True).data
         sale_history_count_serializer = AutoSalonSerializer(
             sale_history_count, many=True
-        )
+        ).data
         prices_in_sale_histories_serializer = AutoSalonSerializer(
             prices_in_sale_histories, many=True
-        )
+        ).data
         # Define response data
         response_data = {
             "suppliers_count": suppliers_count_serializer,
@@ -398,6 +404,22 @@ class AutoSalonStatsViewSet(ModelViewSet):
         }
         # return Response
         return Response(response_data, status=status.HTTP_200_OK)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @extend_schema(tags=["Stats"])
@@ -413,6 +435,8 @@ class SupplierStatsViewSet(ModelViewSet):
     StatsViewSet for Supplier's model
     """
 
+    serializer_class = SupplierSerializer
+
     def list(self, request, *args, **kwargs):
         # Get list suppliers with their max and mib prices
         total_prices = Supplier.objects.annotate(
@@ -420,31 +444,34 @@ class SupplierStatsViewSet(ModelViewSet):
         ).values("name", "max_price", "min_price")
         # Get list suppliers with count their autosalons
         autosalons_count = Supplier.objects.annotate(
-            autosalons=Count("autosalons", distinct=True)
-        ).values("name", "autosalons")
+            autosalons_count=Count("autosalons", distinct=True)
+        ).values("name", "autosalons_count")
+
         # Get list suppliers with count their cars
         cars_count = Supplier.objects.annotate(
-            cars=Count("cars", distinct=True)
-        ).values("name", "cars")
+            cars_count=Count("cars", distinct=True)
+        ).values("name", "cars_count")
         # Get list suppliers with count their sale histories
         sale_history_count = Supplier.objects.annotate(
-            sale_histories=Count("sale_history", distinct=True)
-        ).values("name", "sale_histories")
+            sale_histories_count=Count("sale_history", distinct=True)
+        ).values("name", "sale_histories_count")
         # Get list suppliers with max and min prices in their sale histories
         prices_in_sale_histories = Supplier.objects.annotate(
             max_price_in_history=Max("sale_history__price"),
             min_price_in_history=Min("sale_history__price"),
         ).values("name", "max_price_in_history", "min_price_in_history")
         # Define serializers
-        total_prices_serializer = SupplierSerializer(total_prices, many=True)
-        autosalons_count_serializer = SupplierSerializer(autosalons_count, many=True)
-        cars_count_serializer = SupplierSerializer(cars_count, many=True)
+        total_prices_serializer = SupplierSerializer(total_prices, many=True).data
+        autosalons_count_serializer = SupplierSerializer(
+            autosalons_count, many=True
+        ).data
+        cars_count_serializer = SupplierSerializer(cars_count, many=True).data
         sale_history_count_serializer = SupplierSerializer(
             sale_history_count, many=True
-        )
+        ).data
         prices_in_sale_histories_serializer = SupplierSerializer(
             prices_in_sale_histories, many=True
-        )
+        ).data
         # Define response data
         response_data = {
             "total_prices": total_prices_serializer,
@@ -455,3 +482,19 @@ class SupplierStatsViewSet(ModelViewSet):
         }
         # return Response
         return Response(response_data)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -37,10 +37,10 @@ router.register(
 stats_router = DefaultRouter()
 # connect viewsets with router
 stats_router.register(
-    prefix="autosalon/", viewset=AutoSalonStatsViewSet, basename="autosalon_stats"
+    prefix="autosalon", viewset=AutoSalonStatsViewSet, basename="autosalon_stats"
 )
 stats_router.register(
-    prefix="supplier/", viewset=SupplierStatsViewSet, basename="supplier_stats"
+    prefix="supplier", viewset=SupplierStatsViewSet, basename="supplier_stats"
 )
 
 urlpatterns = [
