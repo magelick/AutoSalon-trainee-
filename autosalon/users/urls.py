@@ -7,6 +7,8 @@ from .views import (
     RegisterViewSet,
     LoginViewSet,
     UpdateTokenViewSet,
+    PasswordUpdateViewSet,
+    EmailUpdateViewSet
 )
 
 # initial default router
@@ -25,6 +27,11 @@ auth_router.register(prefix="login", viewset=LoginViewSet, basename="login")
 auth_router.register(
     prefix="update_token", viewset=UpdateTokenViewSet, basename="update_token"
 )
-
+auth_router.register(
+    prefix="password_update", viewset=PasswordUpdateViewSet, basename="password_update"
+)
+auth_router.register(
+    prefix="email_update", viewset=EmailUpdateViewSet, basename="email_update"
+)
 
 urlpatterns = [path("v1/", include(router.urls)), path("", include(auth_router.urls))]

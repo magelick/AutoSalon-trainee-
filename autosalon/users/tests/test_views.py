@@ -262,3 +262,55 @@ class UpdateTokenTestCase(APITestCase):
             path=reverse(viewname="update_token-list"), data=self.refresh_token
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class PasswordUpdateTestCase(APITestCase):
+    """
+    APITestCase for PasswordUpdateViewSet
+    """
+
+    def setUp(self):
+        self.first_customer = G(
+            Customer,
+            username="admin",
+            first_name="Vladimir",
+            last_name="Zhirinovsky",
+            email="zhirikpushka@gmail.com",
+            password="russiatop!",
+            balance=100000.00,
+        )
+
+        self.data = {
+            "email": "zhirikpushka@gmail.com",
+            "new_password": "russiavsegdatop"
+        }
+
+    def test_password_update(self):
+        response = self.client.post(path=reverse(viewname="password_update-list"), data=self.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class EmailUpdateTestCase(APITestCase):
+    """
+    APITestCase for EmailUpdateViewSet
+    """
+
+    def setUp(self):
+        self.first_customer = G(
+            Customer,
+            username="admin",
+            first_name="Vladimir",
+            last_name="Zhirinovsky",
+            email="zhirikpushka@gmail.com",
+            password="russiatop!",
+            balance=100000.00,
+        )
+
+        self.data = {
+            "email": "zhirikpushka@gmail.com",
+            "new_email": "zhirikpushka2022@gmail.com"
+        }
+
+    def test_password_update(self):
+        response = self.client.post(path=reverse(viewname="email_update-list"), data=self.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
