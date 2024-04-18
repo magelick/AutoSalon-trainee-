@@ -26,6 +26,7 @@ bcrypt = "*"
 pytest = "*"
 pytest-django = "*"
 django-filter = "*"
+flower = "*"
 
 [dev-packages]
 

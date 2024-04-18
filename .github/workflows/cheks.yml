@@ -10,17 +10,18 @@ jobs:
     - uses: actions/checkout@v4  # checkout in working job
 
     - name: 'install python'  # action name
-      uses: actions/setup-python@v4  # some action
+      uses: actions/setup-python@v3  # some action
       with:  # with python version work job
-        python-version: '3.12'  # v3.12
+        python-version: '3.12.2'  # v3.12
 
     - name: 'install deps'  # action name
       run: |  # commands
         python -m pip install pipenv
-        pipenv install
+        pipenv install --dev --deploy
+      working-directory: ./autosalon
 
     - name: 'run flake8'  # action name
-      run: pipenv run flake8 --config .flake8  # command
+      run: cd autosalon && pipenv run flake8 --config .flake8  # command
 
     - name: 'run mypy'  # action name
       run: cd autosalon && pipenv run mypy --ignore-missing-imports --explicit-package-bases .  # command
