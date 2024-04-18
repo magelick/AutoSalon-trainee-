@@ -22,10 +22,8 @@ jobs:
 
     - name: 'run flake8'  # action name
       run: cd autosalon && pipenv run flake8 --config .flake8  # command
-      working-directory: ./autosalon
 
     - name: 'run mypy'  # action name
       run: cd autosalon && pipenv run mypy --ignore-missing-imports --explicit-package-bases .  # command
-      working-directory: ./autosalon
 
 
