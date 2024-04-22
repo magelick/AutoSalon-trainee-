@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -10,11 +9,15 @@ from .models import Customer, SaleHistoryOfCustomer
 
 from .filters import CustomerFilter, SaleHistoryOfCustomerFilter
 
+from .tasks import send_confirmation_email
+
 from .serializers import (
     CustomerSerializer,
     SaleHistoryOfCustomerSerializer,
     LoginSerializer,
     TokenSerializer,
+    PasswordSerializer,
+    EmailSerializer,
 )
 
 from .utils import (
@@ -59,7 +62,7 @@ class CustomerViewSet(ModelViewSet):
     ViewSet for Customer model
     """
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     serializer_class = CustomerSerializer
     queryset = Customer.objects.all()
@@ -104,7 +107,7 @@ class SaleHistoryOfCustomerViewSet(ModelViewSet):
     ViewSet for SaleHistoryOfCustomer model
     """
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     serializer_class = SaleHistoryOfCustomerSerializer
     queryset = SaleHistoryOfCustomer.objects.all()
@@ -144,6 +147,8 @@ class RegisterViewSet(ModelViewSet):
         # create tokens
         access_token = create_access_token(sub=serializer.validated_data["email"])
         refresh_token = create_refresh_token(sub=serializer.validated_data["email"])
+        # confirmation email
+        send_confirmation_email.delay(email=serializer.validated_data["email"])
         # return Response with all instances
         return Response(
             {
@@ -153,6 +158,26 @@ class RegisterViewSet(ModelViewSet):
             },
             status=status.HTTP_201_CREATED,
         )
+
+    @extend_schema(exclude=True)
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @extend_schema(tags=["Auth"])
@@ -197,6 +222,26 @@ class LoginViewSet(ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    @extend_schema(exclude=True)
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 @extend_schema(tags=["Auth"])
 class UpdateTokenViewSet(ModelViewSet):
@@ -238,3 +283,148 @@ class UpdateTokenViewSet(ModelViewSet):
         access_token = create_access_token(sub=customer_email)
         # return Response with new access token
         return Response({"access_token": access_token}, status=status.HTTP_201_CREATED)
+
+    @extend_schema(exclude=True)
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@extend_schema(tags=["Auth"])
+class PasswordUpdateViewSet(ModelViewSet):
+    """
+    ViewSet for update customer password
+    """
+
+    serializer_class = PasswordSerializer
+
+    def get_queryset(self):
+        pass
+
+    @extend_schema(summary="Update Password")
+    def create(self, request, *args, **kwargs):
+        """
+        Password user update
+        :param request:
+        :return:
+        """
+        # take email and password
+        email = request.data["email"]
+        new_password = request.data["new_password"]
+        # if not some data, return Message Response
+        if not email:
+            return Response("Email wasn't declared", status=status.HTTP_403_FORBIDDEN)
+        if not new_password:
+            return Response(
+                "Password wasn't declared", status=status.HTTP_403_FORBIDDEN
+            )
+        # get customer by email
+        customer = get_object_or_404(Customer, email=email)
+        # create new password for customer
+        update_password = create_hash_password(password=new_password)
+        # changing and saving new customer password
+        customer.password = update_password
+        customer.save()
+        # confirmation email
+        send_confirmation_email.delay(email=customer.email)
+        # return Response
+        return Response(
+            {"password": "Password succesfuly updated"}, status=status.HTTP_201_CREATED
+        )
+
+    @extend_schema(exclude=True)
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@extend_schema(tags=["Auth"])
+class EmailUpdateViewSet(ModelViewSet):
+    """
+    ViewSet for update customer email
+    """
+
+    serializer_class = EmailSerializer
+
+    def get_queryset(self):
+        pass
+
+    @extend_schema(summary="Update Email")
+    def create(self, request, *args, **kwargs):
+        """
+        Password user update
+        :param request:
+        :return:
+        """
+        # take email and new email
+        email = request.data["email"]
+        new_email = request.data["new_email"]
+        # if not email, return Response
+        if not email:
+            return Response("Email wasn't declared", status=status.HTTP_403_FORBIDDEN)
+        # if not new email, return Response
+        if not new_email:
+            return Response(
+                "New email wasn't declared", status=status.HTTP_403_FORBIDDEN
+            )
+        # get customer by email
+        customer = get_object_or_404(Customer, email=email)
+        # update customer email on new email
+        customer.email = new_email
+        customer.save()
+        # confirmation email
+        send_confirmation_email.delay(customer.email)
+        # return Response
+        return Response(
+            {"email": "Email succesfuly updated"}, status=status.HTTP_201_CREATED
+        )
+
+    @extend_schema(exclude=True)
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @extend_schema(exclude=True)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

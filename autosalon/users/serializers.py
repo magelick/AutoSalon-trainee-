@@ -45,3 +45,28 @@ class TokenSerializer(Serializer):
 
     class Meta:
         fields = ("refresh_token",)
+
+
+class PasswordSerializer(ModelSerializer):
+    """
+    Serializer for PasswordUpdateViewSet
+    """
+
+    new_password = CharField()
+
+    class Meta:
+        model = Customer
+        fields = ("email", "password", "new_password")
+        extra_kwargs = {"password": {"write_only": True}}
+
+
+class EmailSerializer(ModelSerializer):
+    """
+    Serializer for EmailUpdateViewSet
+    """
+
+    new_email = CharField()
+
+    class Meta:
+        model = Customer
+        fields = ("email", "new_email")
