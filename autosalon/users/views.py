@@ -1,11 +1,10 @@
-from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .models import Customer, SaleHistoryOfCustomer
 
@@ -25,6 +24,11 @@ from .utils import (
     create_refresh_token,
     verify_refresh_token,
 )
+
+from api.views import ViewSetCache
+
+
+from .mixins import CustomerStatsMixin
 
 
 @extend_schema_view(
@@ -55,7 +59,7 @@ from .utils import (
         tags=["Customer"],
     ),
 )
-class CustomerViewSet(ModelViewSet):
+class CustomerViewSet(ViewSetCache):
     """
     ViewSet for Customer model
     """
@@ -100,7 +104,7 @@ class CustomerViewSet(ModelViewSet):
         tags=["Sale History Of Customer"],
     ),
 )
-class SaleHistoryOfCustomerViewSet(ModelViewSet):
+class SaleHistoryOfCustomerViewSet(ViewSetCache):
     """
     ViewSet for SaleHistoryOfCustomer model
     """
@@ -244,82 +248,11 @@ class UpdateTokenViewSet(ModelViewSet):
 @extend_schema(tags=["Stats"])
 @extend_schema_view(
     list=extend_schema(
-        summary="List of Supplier stats",
-        description="Get list of all supplier stats",
-        tags=["Supplier stats"],
+        summary="List of Customer stats",
+        description="Get list of all customer stats",
     )
 )
-class CustomerStatsViewSet(ModelViewSet):
+class CustomerStatsViewSet(CustomerStatsMixin, GenericViewSet):
     """
     StatsViewSet for Customer's model
     """
-
-    serializer_class = CustomerSerializer
-
-    def list(self, request, *args, **kwargs):
-        # Get list customers with count admins
-        admin_count = (
-            Customer.objects.annotate(admin_count=Count("username", distinct=True))
-            .filter(username="admin")
-            .values("admin_count", "email")
-        )
-        # Get list customers with count managers
-        manager_count = (
-            Customer.objects.annotate(manager_count=Count("username", distinct=True))
-            .filter(username="manager")
-            .values("manager_count", "email")
-        )
-        # Get list customers with count empty customers
-        customer_count = (
-            Customer.objects.annotate(customer_count=Count("username", distinct=True))
-            .filter(username="customer")
-            .values("customer_count", "email")
-        )
-        # Get list customers with count their emails
-        email_count = Customer.objects.annotate(
-            email_count=Count("email", distinct=True)
-        )
-        # Get list customers with their total balance
-        total_balance = Customer.objects.annotate(total_balance=Sum("balance")).values(
-            "email", "total_balance"
-        )
-        # Get list customers with count their autosalons
-        autosalons_count = Customer.objects.annotate(
-            autosalons_count=Count("autosalons", distinct=True)
-        ).values("email", "autosalons_count")
-        # Define serializers
-        admin_count_serializer = CustomerSerializer(admin_count, many=True).data
-        manager_count_serializer = CustomerSerializer(manager_count, many=True).data
-        customer_count_serializer = CustomerSerializer(customer_count, many=True).data
-        email_count_serializer = CustomerSerializer(email_count, many=True).data
-        total_balance_serializer = CustomerSerializer(total_balance, many=True).data
-        autosalons_count_serializer = CustomerSerializer(
-            autosalons_count, many=True
-        ).data
-        # Define reponse data
-        response_data = {
-            "admin_count": admin_count_serializer,
-            "manager_count": manager_count_serializer,
-            "customer_count": customer_count_serializer,
-            "email_count": email_count_serializer,
-            "total_balance": total_balance_serializer,
-            "autosalons_count": autosalons_count_serializer,
-        }
-        # return Response
-        return Response(response_data, status=status.HTTP_200_OK)
-
-    @extend_schema(exclude=True)
-    def retrieve(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @extend_schema(exclude=True)
-    def update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @extend_schema(exclude=True)
-    def partial_update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @extend_schema(exclude=True)
-    def destroy(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

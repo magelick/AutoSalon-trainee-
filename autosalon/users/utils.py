@@ -1,8 +1,11 @@
 import os
 from datetime import datetime, timedelta
 
+from django.db.models import Count, Sum
 from passlib.context import CryptContext
 import jwt
+
+from .models import Customer
 
 # create CryptoContext instance with supplement bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"])
@@ -83,3 +86,54 @@ def verify_refresh_token(refresh_token: str):
         os.getenv("REFRESH_TOKEN_EXPIRE"),
         algorithms=["HS256"],
     )
+
+
+class CustomerStatsService:
+    """
+    MixinService for CustomerStatsMixin
+    """
+
+    @staticmethod
+    def get_admin_count():
+        return (
+            Customer.objects.annotate(admin_count=Count("username", distinct=True))
+            .filter(username="admin")
+            .values("admin_count", "email")
+            .count()
+        )
+
+    @staticmethod
+    def get_manager_count():
+        return (
+            Customer.objects.annotate(manager_count=Count("username", distinct=True))
+            .filter(username="manager")
+            .values("manager_count", "email")
+            .count()
+        )
+
+    @staticmethod
+    def get_customer_count():
+        return (
+            Customer.objects.annotate(customer_count=Count("username", distinct=True))
+            .filter(username="customer")
+            .values("customer_count", "email")
+            .count()
+        )
+
+    @staticmethod
+    def get_email_count():
+        return Customer.objects.annotate(
+            email_count=Count("email", distinct=True)
+        ).values("email", "email_count")
+
+    @staticmethod
+    def get_total_balance():
+        return Customer.objects.annotate(total_balance=Sum("balance")).values(
+            "email", "total_balance"
+        )
+
+    @staticmethod
+    def get_autosalons_count():
+        return Customer.objects.annotate(
+            autosalons_count=Count("autosalons", distinct=True)
+        ).values("email", "autosalons_count")

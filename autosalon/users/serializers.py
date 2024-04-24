@@ -1,6 +1,13 @@
-from rest_framework.serializers import ModelSerializer, Serializer, CharField
+from rest_framework.fields import CharField
+from rest_framework.serializers import (
+    ModelSerializer,
+    IntegerField,
+    Serializer,
+)
 
 from .models import Customer, SaleHistoryOfCustomer
+
+from .utils import CustomerStatsService
 
 
 class CustomerSerializer(ModelSerializer):
@@ -45,3 +52,39 @@ class TokenSerializer(Serializer):
 
     class Meta:
         fields = ("refresh_token",)
+
+
+class CustomerStatsSerializer(ModelSerializer):
+    """
+    Serializer for CustomerStatsViewSet
+    """
+
+    admin_count = IntegerField(read_only=True)
+    manager_count = IntegerField(read_only=True)
+    customer_count = IntegerField(read_only=True)
+    email_count = IntegerField(read_only=True)
+    total_balance = IntegerField(read_only=True)
+    autosalons_count = IntegerField(read_only=True)
+
+    class Meta:
+        model = Customer
+        fields = (
+            "admin_count",
+            "manager_count",
+            "customer_count",
+            "email_count",
+            "total_balance",
+            "autosalons_count",
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        data["admin_count"] = CustomerStatsService.get_admin_count()
+        data["manager_count"] = CustomerStatsService.get_manager_count()
+        data["customer_count"] = CustomerStatsService.get_customer_count()
+        data["email_count"] = CustomerStatsService.get_email_count()
+        data["total_balance"] = CustomerStatsService.get_total_balance()
+        data["autosalons_count"] = CustomerStatsService.get_autosalons_count()
+
+        return data

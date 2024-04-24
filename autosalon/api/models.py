@@ -43,14 +43,14 @@ class AutoSalon(models.Model):
     suppliers: models.ManyToManyField = models.ManyToManyField(
         to="Supplier",
         related_name="autosalons",
-        blank=False,
+        blank=True,
         verbose_name="Suppliers of AutoSalon",
     )
     # customers
     customers: models.ManyToManyField = models.ManyToManyField(
         to="users.Customer",
         related_name="autosalons",
-        blank=False,
+        blank=True,
         verbose_name="Customers of AutoSalon",
     )
 
@@ -77,14 +77,14 @@ class Car(models.Model):
     autosalons: models.ManyToManyField = models.ManyToManyField(
         to="AutoSalon",
         related_name="cars",
-        blank=False,
+        blank=True,
         verbose_name="Autosalons with Car",
     )
     # options
     options: models.ManyToManyField = models.ManyToManyField(
         to="OptionCar",
         related_name="cars_options",
-        blank=False,
+        blank=True,
         verbose_name="Options of Car",
     )
     # is active instance
@@ -183,7 +183,7 @@ class OptionCar(models.Model):
     cars: models.ManyToManyField = models.ManyToManyField(
         to="Car",
         related_name="options_car",
-        blank=False,
+        blank=True,
         verbose_name="Cars with Option",
     )
 
@@ -221,7 +221,7 @@ class Supplier(models.Model):
     cars: models.ManyToManyField = models.ManyToManyField(
         to="Car",
         related_name="suppliers_of_car",
-        blank=False,
+        blank=True,
         verbose_name="Cars, which have Supplier",
     )
     # is active instance
