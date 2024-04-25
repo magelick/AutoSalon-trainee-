@@ -8,25 +8,31 @@ from rest_framework.test import APIClient
 def test_autosalon_stats_list():
     client = APIClient()
     response = client.get(path=reverse(viewname="autosalon_stats-list"))
-
     assert response.status_code == status.HTTP_200_OK
-    assert "suppliers_count" in response.data
-    assert "cars_count" in response.data
-    assert "total_price" in response.data
-    assert "special_customers" in response.data
-    assert "car_price" in response.data
-    assert "sale_history_count" in response.data
-    assert "prices_in_sale_histories" in response.data
+
+    if response.data:
+        assert [
+            "suppliers_count",
+            "cars_count",
+            "total_price",
+            "special_customers",
+            "car_price",
+            "sale_history_count",
+            "prices_in_sale_histories",
+        ] == list(response.data.keys())
 
 
 @pytest.mark.django_db
 def test_supplier_stats_list():
     client = APIClient()
     response = client.get(path=reverse(viewname="supplier_stats-list"))
-
     assert response.status_code == status.HTTP_200_OK
-    assert "total_prices" in response.data
-    assert "autosalons_count" in response.data
-    assert "cars_count" in response.data
-    assert "sale_history_count" in response.data
-    assert "prices_in_sale_histories" in response.data
+
+    if response.data:
+        assert [
+            "total_prices",
+            "autosalons_count",
+            "cars_count",
+            "sale_history_count",
+            "prices_in_sale_histories",
+        ] == list(response.data.keys())

@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer, IntegerField, DecimalField
+from rest_framework.fields import SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 from .models import (
     AutoSalon,
     Car,
@@ -87,15 +88,13 @@ class AutoSalonStatsSerializer(ModelSerializer):
     Serializer for AutosSalonStatsViewSet
     """
 
-    suppliers_count = IntegerField(read_only=True)
-    cars_count = IntegerField(read_only=True)
-    total_price = DecimalField(max_digits=10, decimal_places=2, read_only=True)
-    special_customers = IntegerField(read_only=True)
-    car_price = DecimalField(max_digits=10, decimal_places=2, read_only=True)
-    sale_history_count = IntegerField(read_only=True)
-    prices_in_sale_histories = DecimalField(
-        max_digits=10, decimal_places=2, read_only=True
-    )
+    suppliers_count = SerializerMethodField()
+    cars_count = SerializerMethodField()
+    total_price = SerializerMethodField()
+    special_customers = SerializerMethodField()
+    car_price = SerializerMethodField()
+    sale_history_count = SerializerMethodField()
+    prices_in_sale_histories = SerializerMethodField()
 
     class Meta:
         model = AutoSalon
@@ -109,20 +108,26 @@ class AutoSalonStatsSerializer(ModelSerializer):
             "prices_in_sale_histories",
         )
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
+    def get_suppliers_count(self, obj):
+        return AutoSalonStatsService.get_suppliers_count()
 
-        data["suppliers_count"] = AutoSalonStatsService.get_suppliers_count()
-        data["cars_count"] = AutoSalonStatsService.get_cars_count()
-        data["total_price"] = AutoSalonStatsService.get_total_price()
-        data["special_customers"] = AutoSalonStatsService.get_special_customers()
-        data["car_price"] = AutoSalonStatsService.get_car_price()
-        data["sale_history_count"] = AutoSalonStatsService.get_sale_history_count()
-        data["prices_in_sale_histories"] = (
-            AutoSalonStatsService.get_prices_in_sale_histories()
-        )
+    def get_cars_count(self, obj):
+        return AutoSalonStatsService.get_cars_count()
 
-        return data
+    def get_total_price(self, obj):
+        return AutoSalonStatsService.get_total_price()
+
+    def get_special_customers(self, obj):
+        return AutoSalonStatsService.get_special_customers()
+
+    def get_car_price(self, obj):
+        return AutoSalonStatsService.get_car_price()
+
+    def get_sale_history_count(self, obj):
+        return AutoSalonStatsService.get_sale_history_count()
+
+    def get_prices_in_sale_histories(self, obj):
+        return AutoSalonStatsService.get_prices_in_sale_histories()
 
 
 class SupplierStatsSerializer(ModelSerializer):
@@ -130,13 +135,11 @@ class SupplierStatsSerializer(ModelSerializer):
     Serializer for SupplierStatsViewSet
     """
 
-    total_prices = DecimalField(max_digits=10, decimal_places=2, read_only=True)
-    autosalons_count = IntegerField(read_only=True)
-    cars_count = IntegerField(read_only=True)
-    sale_history_count = IntegerField(read_only=True)
-    prices_in_sale_histories = DecimalField(
-        max_digits=10, decimal_places=2, read_only=True
-    )
+    total_prices = SerializerMethodField()
+    autosalons_count = SerializerMethodField()
+    cars_count = SerializerMethodField()
+    sale_history_count = SerializerMethodField()
+    prices_in_sale_histories = SerializerMethodField()
 
     class Meta:
         model = Supplier
@@ -148,15 +151,17 @@ class SupplierStatsSerializer(ModelSerializer):
             "prices_in_sale_histories",
         )
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
+    def get_total_prices(self, obj):
+        return SupplierStatsService.get_total_prices()
 
-        data["total_prices"] = SupplierStatsService.get_total_prices()
-        data["autosalons_count"] = SupplierStatsService.get_autosalons_count()
-        data["cars_count"] = SupplierStatsService.get_cars_count()
-        data["sale_history_count"] = SupplierStatsService.get_sale_history_count()
-        data["prices_in_sale_histories"] = (
-            SupplierStatsService.get_prices_in_sale_histories()
-        )
+    def get_autosalons_count(self, obj):
+        return SupplierStatsService.get_autosalons_count()
 
-        return data
+    def get_cars_count(self, obj):
+        return SupplierStatsService.get_cars_count()
+
+    def get_sale_history_count(self, obj):
+        return SupplierStatsService.get_sale_history_count()
+
+    def get_prices_in_sale_histories(self, obj):
+        return SupplierStatsService.get_prices_in_sale_histories()

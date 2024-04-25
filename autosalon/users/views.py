@@ -15,6 +15,7 @@ from .serializers import (
     SaleHistoryOfCustomerSerializer,
     LoginSerializer,
     TokenSerializer,
+    CustomerStatsSerializer,
 )
 
 from .utils import (
@@ -256,3 +257,7 @@ class CustomerStatsViewSet(CustomerStatsMixin, GenericViewSet):
     """
     StatsViewSet for Customer's model
     """
+
+    def list(self, request, *args, **kwargs):
+        serializer = CustomerStatsSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

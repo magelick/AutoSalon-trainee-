@@ -1,6 +1,8 @@
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from django.views.decorators.cache import cache_page
 
@@ -22,6 +24,8 @@ from .serializers import (
     SaleHistorySerializer,
     SpecialOfferOfAutoSalonSerializer,
     SpecialOfferOfSupplierSerializer,
+    AutoSalonStatsSerializer,
+    SupplierStatsSerializer,
 )
 
 from .filters import (
@@ -337,6 +341,10 @@ class AutoSalonStatsViewSet(AutoSalonStatsMixin, GenericViewSet):
     StatsViewSet for AutoSalon's model
     """
 
+    def list(self, request, *args, **kwargs):
+        serializer = AutoSalonStatsSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @extend_schema(tags=["Stats"])
 @extend_schema_view(
@@ -349,3 +357,7 @@ class SupplierStatsViewSet(SupplierStatsMixin, GenericViewSet):
     """
     StatsViewSet for Supplier's model
     """
+
+    def list(self, request, *args, **kwargs):
+        serializer = SupplierStatsSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

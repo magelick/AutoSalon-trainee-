@@ -1,7 +1,6 @@
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.serializers import (
     ModelSerializer,
-    IntegerField,
     Serializer,
 )
 
@@ -59,12 +58,12 @@ class CustomerStatsSerializer(ModelSerializer):
     Serializer for CustomerStatsViewSet
     """
 
-    admin_count = IntegerField(read_only=True)
-    manager_count = IntegerField(read_only=True)
-    customer_count = IntegerField(read_only=True)
-    email_count = IntegerField(read_only=True)
-    total_balance = IntegerField(read_only=True)
-    autosalons_count = IntegerField(read_only=True)
+    admin_count = SerializerMethodField()
+    manager_count = SerializerMethodField()
+    customer_count = SerializerMethodField()
+    email_count = SerializerMethodField()
+    total_balance = SerializerMethodField()
+    autosalons_count = SerializerMethodField()
 
     class Meta:
         model = Customer
@@ -77,14 +76,20 @@ class CustomerStatsSerializer(ModelSerializer):
             "autosalons_count",
         )
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
+    def get_admin_count(self, obj):
+        return CustomerStatsService.get_admin_count()
 
-        data["admin_count"] = CustomerStatsService.get_admin_count()
-        data["manager_count"] = CustomerStatsService.get_manager_count()
-        data["customer_count"] = CustomerStatsService.get_customer_count()
-        data["email_count"] = CustomerStatsService.get_email_count()
-        data["total_balance"] = CustomerStatsService.get_total_balance()
-        data["autosalons_count"] = CustomerStatsService.get_autosalons_count()
+    def get_manager_count(self, obj):
+        return CustomerStatsService.get_manager_count()
 
-        return data
+    def get_customer_count(self, obj):
+        return CustomerStatsService.get_customer_count()
+
+    def get_email_count(self, obj):
+        return CustomerStatsService.get_email_count()
+
+    def get_total_balance(self, obj):
+        return CustomerStatsService.get_total_balance()
+
+    def get_autosalons_count(self, obj):
+        return CustomerStatsService.get_autosalons_count()
