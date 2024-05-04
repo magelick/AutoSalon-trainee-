@@ -1,7 +1,9 @@
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from django.views.decorators.cache import cache_page
 
 from .models import (
@@ -22,6 +24,8 @@ from .serializers import (
     SaleHistorySerializer,
     SpecialOfferOfAutoSalonSerializer,
     SpecialOfferOfSupplierSerializer,
+    AutoSalonStatsSerializer,
+    SupplierStatsSerializer,
 )
 
 from .filters import (
@@ -34,11 +38,15 @@ from .filters import (
     SpecialOfferOfAutoSalonFilter,
 )
 
+from .mixins import AutoSalonStatsMixin, SupplierStatsMixin
+
 
 class ViewSetCache(ModelViewSet):
     """
     Basic ViewSet with caches
     """
+
+    filter_backends = (DjangoFilterBackend,)
 
     @method_decorator(cache_page(60 * 2))
     def dispatch(self, request, *args, **kwargs):
@@ -81,7 +89,6 @@ class AutoSalonViewSet(ViewSetCache):
     serializer_class = AutoSalonSerializer
     queryset = AutoSalon.objects.all()
     filterset_class = AutoSalonFilter
-    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -116,7 +123,6 @@ class CarViewSet(ViewSetCache):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
     filterset_class = CarFilter
-    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -157,7 +163,6 @@ class OptionCarViewSet(ViewSetCache):
     serializer_class = OptionCarSerializer
     queryset = OptionCar.objects.all()
     filterset_class = OptionCarFilter
-    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -196,7 +201,6 @@ class SupplierViewSet(ViewSetCache):
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()
     filterset_class = SupplierFilter
-    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -239,7 +243,6 @@ class SaleHistoryViewSet(ViewSetCache):
     serializer_class = SaleHistorySerializer
     queryset = SaleHistory.objects.all()
     filterset_class = SaleHistoryFilter
-    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -282,7 +285,6 @@ class SpecialOfferOfAutoSalonViewSet(ViewSetCache):
     serializer_class = SpecialOfferOfAutoSalonSerializer
     queryset = SpecialOfferOfAutoSalon.objects.all()
     filterset_class = SpecialOfferOfAutoSalonFilter
-    filter_backends = (DjangoFilterBackend,)
 
 
 @extend_schema_view(
@@ -325,4 +327,37 @@ class SpecialOfferOfSupplierViewSet(ViewSetCache):
     serializer_class = SpecialOfferOfSupplierSerializer
     queryset = SpecialOfferOfSupplier.objects.all()
     filterset_class = SpecialOfferOfSupplierFilter
-    filter_backends = (DjangoFilterBackend,)
+
+
+@extend_schema(tags=["Stats"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of AutoSalon stats",
+        description="Get list of all autosalon stats",
+    )
+)
+class AutoSalonStatsViewSet(AutoSalonStatsMixin, GenericViewSet):
+    """
+    StatsViewSet for AutoSalon's model
+    """
+
+    def list(self, request, *args, **kwargs):
+        serializer = AutoSalonStatsSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@extend_schema(tags=["Stats"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of Supplier stats",
+        description="Get list of all supplier stats",
+    )
+)
+class SupplierStatsViewSet(SupplierStatsMixin, GenericViewSet):
+    """
+    StatsViewSet for Supplier's model
+    """
+
+    def list(self, request, *args, **kwargs):
+        serializer = SupplierStatsSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

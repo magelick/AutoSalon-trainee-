@@ -27,6 +27,7 @@ pytest = "*"
 pytest-django = "*"
 django-filter = "*"
 flower = "*"
+faker = "*"
 
 [dev-packages]
 

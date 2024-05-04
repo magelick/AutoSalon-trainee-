@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .models import Customer, SaleHistoryOfCustomer
 
@@ -18,6 +18,7 @@ from .serializers import (
     TokenSerializer,
     PasswordSerializer,
     EmailSerializer,
+    CustomerStatsSerializer,
 )
 
 from .utils import (
@@ -27,6 +28,11 @@ from .utils import (
     create_refresh_token,
     verify_refresh_token,
 )
+
+from api.views import ViewSetCache
+
+
+from .mixins import CustomerStatsMixin
 
 
 @extend_schema_view(
@@ -57,7 +63,7 @@ from .utils import (
         tags=["Customer"],
     ),
 )
-class CustomerViewSet(ModelViewSet):
+class CustomerViewSet(ViewSetCache):
     """
     ViewSet for Customer model
     """
@@ -102,7 +108,7 @@ class CustomerViewSet(ModelViewSet):
         tags=["Sale History Of Customer"],
     ),
 )
-class SaleHistoryOfCustomerViewSet(ModelViewSet):
+class SaleHistoryOfCustomerViewSet(ViewSetCache):
     """
     ViewSet for SaleHistoryOfCustomer model
     """
@@ -428,3 +434,20 @@ class EmailUpdateViewSet(ModelViewSet):
     @extend_schema(exclude=True)
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@extend_schema(tags=["Stats"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List of Customer stats",
+        description="Get list of all customer stats",
+    )
+)
+class CustomerStatsViewSet(CustomerStatsMixin, GenericViewSet):
+    """
+    StatsViewSet for Customer's model
+    """
+
+    def list(self, request, *args, **kwargs):
+        serializer = CustomerStatsSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -9,6 +9,8 @@ from .views import (
     SaleHistoryViewSet,
     SpecialOfferOfSupplierViewSet,
     SpecialOfferOfAutoSalonViewSet,
+    AutoSalonStatsViewSet,
+    SupplierStatsViewSet,
 )
 
 # initial default router
@@ -31,5 +33,17 @@ router.register(
     viewset=SpecialOfferOfSupplierViewSet,
     basename="offers_customer",
 )
+# initial stats default router
+stats_router = DefaultRouter()
+# connect viewsets with router
+stats_router.register(
+    prefix="autosalon", viewset=AutoSalonStatsViewSet, basename="autosalon_stats"
+)
+stats_router.register(
+    prefix="supplier", viewset=SupplierStatsViewSet, basename="supplier_stats"
+)
 
-urlpatterns = [path("v1/", include(router.urls))]
+urlpatterns = [
+    path("v1/", include(router.urls)),
+    path("stats/", include(stats_router.urls)),
+]
