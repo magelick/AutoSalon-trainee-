@@ -50,7 +50,7 @@ def test_autosalon_customers(autosalon_object, customer_object):
 
 @pytest.mark.django_db
 def test_car_model_name(car_object):
-    data = {"model_name": "BMW M5 G30"}
+    data = {"model_name": "AUDI RS7 PERFORMANCE"}
     filter_data = CarFilter(data=data)
     assert filter_data.qs.first().model_name == car_object.model_name
 

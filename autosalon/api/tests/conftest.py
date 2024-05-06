@@ -1,7 +1,6 @@
-from datetime import timedelta
+from datetime import timedelta, date
 
 import pytest
-from django.utils import timezone
 from django_dynamic_fixture import G
 
 from ..models import (
@@ -19,7 +18,7 @@ from users.models import Customer
 
 @pytest.fixture
 def customer_object():
-    return G(model=Customer, first_name="Boris")
+    return G(model=Customer, first_name="Boris", balance=100000.00)
 
 
 @pytest.fixture
@@ -36,14 +35,14 @@ def autosalon_object():
 
 @pytest.fixture()
 def car_object(autosalon_object):
-    return G(model=Car, model_name="BMW M5 G30", autosalons=[], options=[])
+    return G(model=Car, model_name="AUDI RS7 PERFORMANCE", autosalons=[], options=[])
 
 
 @pytest.fixture()
 def option_car_object():
     return G(
         model=OptionCar,
-        year=timezone.now(),
+        year=date.today(),
         mileage=10000,
         body_type="sedan",
         transmission_type="automatic",
@@ -59,7 +58,7 @@ def supplier_object():
     return G(
         model=Supplier,
         name="AutoHouse",
-        year_of_issue=timezone.now(),
+        year_of_issue=date.today(),
         price=50000.00,
         cars=[],
     )
@@ -83,8 +82,8 @@ def special_offer_of_autosalon_object(autosalon_object):
         descr="Special offer for customers!",
         dealer=autosalon_object.id,
         discount=25,
-        start_date=timezone.now(),
-        end_date=timezone.now() + timedelta(days=7),
+        start_date=date.today(),
+        end_date=date.today() + timedelta(days=7),
     )
 
 
@@ -96,6 +95,6 @@ def special_offer_of_supplier_object(supplier_object):
         descr="Special offer for customers!",
         supplier=supplier_object.id,
         discount=25,
-        start_date=timezone.now(),
-        end_date=timezone.now() + timedelta(days=7),
+        start_date=date.today(),
+        end_date=date.today() + timedelta(days=7),
     )

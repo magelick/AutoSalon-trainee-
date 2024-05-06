@@ -105,7 +105,7 @@ class SaleHistoryOfCustomer(models.Model):
         verbose_name="Price of Sale History",
     )
     # date of deal
-    date: models.DateTimeField = models.DateTimeField(
+    date: models.DateField = models.DateField(
         auto_now_add=True, blank=False, null=False, verbose_name="Date of deal"
     )
 

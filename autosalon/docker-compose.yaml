@@ -7,14 +7,14 @@ services:  # all services
       dockerfile: Dockerfile  # what name for this file
     container_name: "autosalon"  # name service (container)
     ports:  # service (container) ports
-      - "8001:8000"
+      - "8000:8000"
     logging:  # service (container) logs
       options:  # option for log
         max-size: '500M'  # max size log files
         max-file: '5'  # max count of files
     env_file:  # .env file with environments
       - ../.env
-    command: python manage.py runserver 0.0.0.0:8000  # command for start work
+    command: gunicorn autosalon.wsgi:application --bind 0.0.0.0:8000  # command for start work
     restart: always  # always restart service (container) if his breakdown
     volumes:  # connection your app's with workdir of service (container)
       - .:/app
@@ -57,7 +57,7 @@ services:  # all services
     restart: always  # always restart service (container) if his breakdown
     volumes:  # connection your app's with workdir of service (container)
       - .:/app
-    depends_on:
+    depends_on: # what services (containers) this container depends on
       - redis
       - app
 
@@ -77,7 +77,7 @@ services:  # all services
     restart: always  # always restart service (container) if his breakdown
     volumes: # connection your app's with workdir of service (container)
       - .:/app
-    depends_on:
+    depends_on: # what services (containers) this container depends on
       - celery-worker
 
   celery-flower: # celery-flower service
@@ -89,7 +89,7 @@ services:  # all services
     env_file: # .env file with environments
       - ../.env
     command: celery -A autosalon flower --port=5555  # command for start work
-    ports:
+    ports:  # service (container) ports
       - "5555:5555"
     logging: # service (container) logs
       options: # option for log
@@ -98,5 +98,17 @@ services:  # all services
     restart: always  # always restart service (container) if his breakdown
     volumes: # connection your app's with workdir of service (container)
       - .:/app
-    depends_on:
+    depends_on: # what services (containers) this container depends on
       - celery-worker
+
+  nginx:  # nginx service
+    image: nginx:1.25-alpine3.19-slim  # what image use for this service (container)
+    container_name: "autosalon-nginx"  # service (container) name
+    volumes:  # connection your app's with workdir of service (container)
+      - ./conf.d:/etc/nginx/conf.d
+      - ./autosalon/log:/var/log/nginx
+    ports:  # service (container) ports
+      - "80:80"
+    restart: always  # always restart service (container) if his breakdown
+    depends_on:  # what services (containers) this container depends on
+      - app

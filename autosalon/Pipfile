@@ -28,6 +28,7 @@ pytest-django = "*"
 django-filter = "*"
 flower = "*"
 faker = "*"
+gunicorn = "*"
 
 [dev-packages]
 

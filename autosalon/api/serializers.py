@@ -18,6 +18,16 @@ class AutoSalonSerializer(ModelSerializer):
     Serializer for AutoSalon model
     """
 
+    def to_representation(self, instance):
+        """
+        Representation CountryField instance in str
+        :param instance:
+        :return:
+        """
+        representation = super().to_representation(instance)
+        representation["location"] = str(instance.location)
+        return representation
+
     class Meta:
         model = AutoSalon
         fields = "__all__"

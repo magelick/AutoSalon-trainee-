@@ -1,4 +1,4 @@
-from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.fields import CharField, SerializerMethodField, EmailField
 from rest_framework.serializers import (
     ModelSerializer,
     Serializer,
@@ -20,13 +20,15 @@ class CustomerSerializer(ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class LoginSerializer(ModelSerializer):
+class LoginSerializer(Serializer):
     """
     Serializer for Login of Customer model
     """
 
+    email = EmailField()
+    password = CharField()
+
     class Meta:
-        model = Customer
         fields = ("email", "password")
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -53,28 +55,29 @@ class TokenSerializer(Serializer):
         fields = ("refresh_token",)
 
 
-class PasswordSerializer(ModelSerializer):
+class PasswordSerializer(Serializer):
     """
     Serializer for PasswordUpdateViewSet
     """
 
+    email = EmailField()
+    password = CharField()
     new_password = CharField()
 
     class Meta:
-        model = Customer
         fields = ("email", "password", "new_password")
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class EmailSerializer(ModelSerializer):
+class EmailSerializer(Serializer):
     """
     Serializer for EmailUpdateViewSet
     """
 
-    new_email = CharField()
+    email = EmailField()
+    new_email = EmailField()
 
     class Meta:
-        model = Customer
         fields = ("email", "new_email")
 
 
