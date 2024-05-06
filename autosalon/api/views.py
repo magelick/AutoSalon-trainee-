@@ -40,6 +40,12 @@ from .filters import (
 
 from .mixins import AutoSalonStatsMixin, SupplierStatsMixin
 
+from users.permissions import (
+    IsManagerPermission,
+    IsAdminPermission,
+    IsCustomerPermission,
+)
+
 
 class ViewSetCache(ModelViewSet):
     """
@@ -86,6 +92,7 @@ class AutoSalonViewSet(ViewSetCache):
     ViewSet for AutoSalon model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission, IsCustomerPermission]
     serializer_class = AutoSalonSerializer
     queryset = AutoSalon.objects.all()
     filterset_class = AutoSalonFilter
@@ -120,6 +127,7 @@ class CarViewSet(ViewSetCache):
     ViewSet for Car model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission, IsCustomerPermission]
     serializer_class = CarSerializer
     queryset = Car.objects.all()
     filterset_class = CarFilter
@@ -160,6 +168,7 @@ class OptionCarViewSet(ViewSetCache):
     ViewSet for OptionCar model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission, IsCustomerPermission]
     serializer_class = OptionCarSerializer
     queryset = OptionCar.objects.all()
     filterset_class = OptionCarFilter
@@ -198,6 +207,7 @@ class SupplierViewSet(ViewSetCache):
     ViewSet for Supplier model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission, IsCustomerPermission]
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()
     filterset_class = SupplierFilter
@@ -240,6 +250,7 @@ class SaleHistoryViewSet(ViewSetCache):
     ViewSet for SaleHistory model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission]
     serializer_class = SaleHistorySerializer
     queryset = SaleHistory.objects.all()
     filterset_class = SaleHistoryFilter
@@ -282,6 +293,7 @@ class SpecialOfferOfAutoSalonViewSet(ViewSetCache):
     ViewSet for SpecialOfferOfAutoSalon model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission]
     serializer_class = SpecialOfferOfAutoSalonSerializer
     queryset = SpecialOfferOfAutoSalon.objects.all()
     filterset_class = SpecialOfferOfAutoSalonFilter
@@ -324,6 +336,7 @@ class SpecialOfferOfSupplierViewSet(ViewSetCache):
     ViewSet for SpecialOfferOfSupplier model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission]
     serializer_class = SpecialOfferOfSupplierSerializer
     queryset = SpecialOfferOfSupplier.objects.all()
     filterset_class = SpecialOfferOfSupplierFilter
@@ -341,6 +354,8 @@ class AutoSalonStatsViewSet(AutoSalonStatsMixin, GenericViewSet):
     StatsViewSet for AutoSalon's model
     """
 
+    permission_classes = [IsManagerPermission, IsAdminPermission]
+
     def list(self, request, *args, **kwargs):
         serializer = AutoSalonStatsSerializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -357,6 +372,8 @@ class SupplierStatsViewSet(SupplierStatsMixin, GenericViewSet):
     """
     StatsViewSet for Supplier's model
     """
+
+    permission_classes = [IsManagerPermission, IsAdminPermission]
 
     def list(self, request, *args, **kwargs):
         serializer = SupplierStatsSerializer(self.queryset, many=True)

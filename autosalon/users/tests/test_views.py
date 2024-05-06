@@ -1,5 +1,5 @@
 from django.urls import reverse
-from django.utils import timezone
+from datetime import date
 from django_dynamic_fixture import G
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -114,20 +114,20 @@ class SaleHistoryOfCustomerTestCase(APITestCase):
             customer=self.customer,
             car=self.car,
             price=85000.00,
-            date=timezone.now(),
+            date=date.today(),
         )
         self.second_sale_history = G(
             SaleHistoryOfCustomer,
             customer=self.customer,
             car=self.car,
             price=45000.00,
-            date=timezone.now(),
+            date=date.today(),
         )
         self.sale_history_data = {
             "customer": self.customer.id,
             "car": self.car.id,
             "price": 35000.00,
-            "date": timezone.now(),
+            "date": date.today(),
         }
 
         self.client.force_authenticate(self.customer)
@@ -282,6 +282,7 @@ class PasswordUpdateTestCase(APITestCase):
 
         self.data = {
             "email": "zhirikpushka@gmail.com",
+            "password": "russiatop1",
             "new_password": "russiavsegdatop",
         }
 

@@ -24,18 +24,23 @@ class AutoSalonFilter(FilterSet):
     Filter for AutoSalonViewSet
     """
 
+    # AutoSalon name
     name = CharFilter(
         field_name="name", lookup_expr="icontains", label="Name of Autosalon"
     )
+    # AutoSalon balance
     balance = NumberFilter(
         field_name="balance", lookup_expr="exact", label="Balance of Autosalon"
     )
+    # Flag is active
     is_active = BooleanFilter(field_name="is_active", label="Is active")
+    # AutoSalon suppliers
     suppliers = ModelMultipleChoiceFilter(
         queryset=Supplier.objects.get_queryset(),
         field_name="suppliers",
         label="Suppliers of Autosalon",
     )
+    # AutoSalon customers
     customers = ModelMultipleChoiceFilter(
         queryset=Supplier.objects.all(),
         field_name="customers",
@@ -52,19 +57,23 @@ class CarFilter(FilterSet):
     Filter for CarViewSet
     """
 
+    # Car model name
     model_name = CharFilter(
         field_name="model_name", lookup_expr="icontains", label="Model of Car"
     )
+    # Car autosalons
     autosalons = ModelMultipleChoiceFilter(
         queryset=AutoSalon.objects.get_queryset(),
         field_name="autosalons",
         label="Autosalon with this car",
     )
+    # Car options
     options = ModelMultipleChoiceFilter(
         queryset=OptionCar.objects.get_queryset(),
         field_name="options",
         label="Options in this car",
     )
+    # Flag is active
     is_active = BooleanFilter(field_name="is_active", label="Is active")
 
     class Meta:
@@ -77,16 +86,21 @@ class OptionCarFilter(FilterSet):
     Filter for OptionCarViewSet
     """
 
+    # Year
     year = DateTimeFilter(field_name="year", lookup_expr="year", label="Year of car")
+    # Year range
     year_range = DateTimeFromToRangeFilter(
         field_name="year", lookup_expr="year", label="Range year of car"
     )
+    # Min mileage
     mileage_min = NumberFilter(
         field_name="mileage", lookup_expr="gte", label="Min mileage"
     )
+    # Max mileage
     mileage_max = NumberFilter(
         field_name="mileage", lookup_expr="lte", label="Max mileage"
     )
+    # Option cars
     cars = ModelMultipleChoiceFilter(
         queryset=Car.objects.get_queryset(),
         field_name="cars",
@@ -113,14 +127,19 @@ class SupplierFilter(FilterSet):
     Filter for SupplierViewSet
     """
 
+    # Supplier name
     name = CharFilter(field_name="name", lookup_expr="icontains", label="Supplier name")
+    # Supplier year of issue
     year_of_issue = DateTimeFilter(
         field_name="year_of_issue", lookup_expr="year", label="Year of issue"
     )
+    # Supplier car price
     price = NumberFilter(field_name="price", lookup_expr="exact", label="Price of cars")
+    # Supplier cars
     cars = ModelMultipleChoiceFilter(
         queryset=Car.objects.get_queryset(), field_name="cars", label="Supplier cars"
     )
+    # Flag is active
     is_active = BooleanFilter(field_name="is_active", label="Is active")
 
     class Meta:
@@ -133,16 +152,19 @@ class SaleHistoryFilter(FilterSet):
     Filter for SaleHistoryViewSet
     """
 
+    # Sale History autosalon
     autosalon = CharFilter(
         field_name="autosalon__name",
         lookup_expr="icontains",
         label="Autosalon of special offer",
     )
+    # Sale History supplier
     supplier = CharFilter(
         field_name="supplier__name",
         lookup_expr="icontains",
         label="Supplier of special offer",
     )
+    # Sale History car price
     price = NumberFilter(
         field_name="price", lookup_expr="exact", label="Price of special offer"
     )
@@ -157,24 +179,31 @@ class SpecialOfferOfAutoSalonFilter(FilterSet):
     Filter for SpecialOfferOfAutoSalonViewSet
     """
 
+    # Special Offer name
     name = CharFilter(
         field_name="name", lookup_expr="icontains", label="Special offer name"
     )
+    # Min Special Offer discount
     discount_min = NumberFilter(
         field_name="discount", lookup_expr="gte", label="Min discount"
     )
+    # Max Special Offer discount
     discount_max = NumberFilter(
         field_name="discount", lookup_expr="lte", label="Max discount"
     )
+    # Special Offer autosalon
     dealer = CharFilter(
         field_name="dealer__name",
         lookup_expr="icontains",
         label="Autosalon of special offer",
     )
+    # Special Offer start date
     start_date = DateTimeFilter(
         field_name="start_date", label="First day fo special offer"
     )
+    # Special Offer end date
     end_date = DateTimeFilter(field_name="end_date", label="Last day fo special offer")
+    # Flag is active
     is_active = BooleanFilter(field_name="is_active", label="Is active")
 
     class Meta:
@@ -195,24 +224,31 @@ class SpecialOfferOfSupplierFilter(FilterSet):
     Filter for SpecialOfferOfSupplierViewSet
     """
 
+    # Special Offer name
     name = CharFilter(
         field_name="name", lookup_expr="icontains", label="Special offer name"
     )
+    # Min Special Offer discount
     discount_min = NumberFilter(
         field_name="discount", lookup_expr="gte", label="Min discount"
     )
+    # Max Special Offer discount
     discount_max = NumberFilter(
         field_name="discount", lookup_expr="lte", label="Max discount"
     )
+    # Special Offer supplier
     supplier = CharFilter(
         field_name="supplier__name",
         lookup_expr="icontains",
         label="Autosalon of special offer",
     )
+    # Special Offer start date
     start_date = DateTimeFilter(
         field_name="start_date", label="First day fo special offer"
     )
+    # Special Offer end date
     end_date = DateTimeFilter(field_name="end_date", label="Last day fo special offer")
+    # Flag is active
     is_active = BooleanFilter(field_name="is_active", label="Is active")
 
     class Meta:

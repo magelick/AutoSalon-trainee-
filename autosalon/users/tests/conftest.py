@@ -1,5 +1,5 @@
 import pytest
-from django.utils import timezone
+from datetime import date
 from django_dynamic_fixture import G
 
 from ..models import Customer, SaleHistoryOfCustomer
@@ -32,5 +32,5 @@ def sale_history_of_customer_object(customer_object, second_car_object):
         customer=customer_object,
         car=second_car_object,
         price=85000.00,
-        date=timezone.now(),
+        date=date.today(),
     )

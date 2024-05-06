@@ -107,7 +107,7 @@ class OptionCar(models.Model):
 
     objects = OptionCarManager()
     # year
-    year: models.DateTimeField = models.DateTimeField(
+    year: models.DateField = models.DateField(
         blank=False, null=False, verbose_name="Year of car"
     )
     # mileage
@@ -206,7 +206,7 @@ class Supplier(models.Model):
         max_length=128, blank=False, null=False, verbose_name="Name of Supplier"
     )
     # year of issue
-    year_of_issue: models.DateTimeField = models.DateTimeField(
+    year_of_issue: models.DateField = models.DateField(
         blank=False, null=False, verbose_name="Year for issue of Supplier"
     )
     # price of each cars
@@ -307,14 +307,14 @@ class SpecialOfferOfAutoSalon(models.Model):
         verbose_name="AutoSalon of that Special Offer",
     )
     # start date
-    start_date: models.DateTimeField = models.DateTimeField(
+    start_date: models.DateField = models.DateField(
         auto_now_add=True,
         blank=False,
         null=False,
         verbose_name="Start date of Special Offer",
     )
     # end date
-    end_date: models.DateTimeField = models.DateTimeField(
+    end_date: models.DateField = models.DateField(
         blank=True, null=False, verbose_name="End date of Special Offer"
     )
     # is active instance
@@ -357,14 +357,14 @@ class SpecialOfferOfSupplier(models.Model):
         verbose_name="Supplier of that Special Offer",
     )
     # start date
-    start_date: models.DateTimeField = models.DateTimeField(
+    start_date: models.DateField = models.DateField(
         auto_now_add=True,
         blank=False,
         null=False,
         verbose_name="Start date of Special Offer",
     )
     # end date
-    end_date: models.DateTimeField = models.DateTimeField(
+    end_date: models.DateField = models.DateField(
         blank=True, null=False, verbose_name="End date of Special Offer"
     )
     # is active instance

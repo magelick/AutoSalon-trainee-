@@ -16,12 +16,12 @@ app.autodiscover_tasks(related_name="tasks")
 app.conf.beat_schedule = {
     "deal_between_autosalon_and_supplier": {
         "task": "api.tasks.buy_car_between_autosalon_and_supplier",
-        "schedule": crontab(minute="*/10"),
+        "schedule": crontab(minute="*/1"),
         "args": (1, 1),
     },
     "deal_between_customer_and_autosalon": {
         "task": "api.tasks.buy_car_between_customer_and_autosalon",
-        "schedule": crontab(minute="*/15"),
-        "args": (1, 1, 50000, "BMW M5 G30"),
+        "schedule": crontab(minute="*/1"),
+        "args": (1, 1, 50000),
     },
 }

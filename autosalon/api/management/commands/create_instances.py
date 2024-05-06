@@ -1,5 +1,7 @@
+from datetime import date, timedelta
+
 from django.core.management.base import BaseCommand
-from api.models import AutoSalon, Car, OptionCar, Supplier
+from api.models import AutoSalon, Car, OptionCar, Supplier, SpecialOfferOfSupplier
 from faker import Faker
 
 
@@ -51,7 +53,22 @@ class Command(BaseCommand):
             Supplier.objects.create(
                 name=faker.unique.company(),
                 year_of_issue=faker.date(),
-                price=faker.pydecimal(8, min_value=10000.00, positive=True),
+                price=faker.pydecimal(8, max_value=25000.00, positive=True),
+            )
+
+        # Populate Special Offer of Supplier
+        for _ in range(1):
+            SpecialOfferOfSupplier.objects.create(
+                name=faker.unique.company(),
+                descr=faker.text(),
+                discount=faker.pyint(min_value=10, max_value=25),
+                supplier=Supplier.objects.create(
+                    name=faker.unique.company(),
+                    year_of_issue=faker.date(),
+                    price=faker.pydecimal(8, max_value=25000.00, positive=True),
+                ),
+                start_date=date.today(),
+                end_date=date.today() + timedelta(days=7),
             )
 
         self.stdout.write(self.style.SUCCESS("Data populated successfully"))

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 
 from django.urls import reverse
 from django.utils import timezone
@@ -124,7 +124,7 @@ class CarTestCase(APITestCase):
         )
         self.option_car = G(
             model=OptionCar,
-            year=timezone.now(),
+            year=date.today(),
             mileage=5000,
             body_type="sedan",
             transmission_type="automatic",
@@ -201,7 +201,7 @@ class OptionCarTestCase(APITestCase):
 
         self.first_option_car = G(
             model=OptionCar,
-            year=timezone.now(),
+            year=date.today(),
             mileage=12000,
             body_type="sedan",
             transmission_type="automatic",
@@ -212,7 +212,7 @@ class OptionCarTestCase(APITestCase):
         )
         self.second_option_car = G(
             model=OptionCar,
-            year=timezone.now(),
+            year=date.today(),
             mileage=10000,
             body_type="coupe",
             transmission_type="automatic",
@@ -223,7 +223,7 @@ class OptionCarTestCase(APITestCase):
         )
         self.third_option_car = G(
             model=OptionCar,
-            year=timezone.now(),
+            year=date.today(),
             mileage=100000,
             body_type="suv",
             transmission_type="mechanics",
@@ -233,7 +233,7 @@ class OptionCarTestCase(APITestCase):
             cars=[self.first_car, self.second_car],
         )
         self.option_car_data = {
-            "year": timezone.now(),
+            "year": date.today(),
             "mileage": 120000,
             "body_type": "sport",
             "transmission_type": "mechanics",
@@ -302,27 +302,27 @@ class SupplierTestCase(APITestCase):
         self.first_supplier = G(
             model=Supplier,
             name="AutoHouse",
-            year_of_issue=timezone.now(),
+            year_of_issue=date.today(),
             price=25000.00,
             cars=[self.car],
         )
         self.second_supplier = G(
             model=Supplier,
             name="Atlant-M",
-            year_of_issue=timezone.now(),
+            year_of_issue=date.today(),
             price=15000.00,
             cars=[self.car],
         )
         self.third_supplier = G(
             model=Supplier,
             name="CarHouse",
-            year_of_issue=timezone.now(),
+            year_of_issue=date.today(),
             price=45000.00,
             cars=[self.car],
         )
         self.supplier_data = {
             "name": "Test Supplier",
-            "year_of_issue": timezone.now(),
+            "year_of_issue": date.today(),
             "price": 15000.00,
             "cars": [self.car.id],
         }
@@ -385,7 +385,7 @@ class SaleHistoryTestCase(APITestCase):
         )
 
         self.supplier = G(
-            Supplier, name="AutoHouse", year_of_issue=timezone.now(), price=25000.00
+            Supplier, name="AutoHouse", year_of_issue=date.today(), price=25000.00
         )
 
         self.first_sale_history = G(
@@ -485,8 +485,8 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
             descr="Special offer for customers!",
             discount=2000,
             dealer=self.first_autosalon,
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=7),
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=7),
         )
         self.second_special_offer_of_autosalon = G(
             model=SpecialOfferOfAutoSalon,
@@ -494,8 +494,8 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
             descr="Special offer for customers!",
             discount=5000,
             dealer=self.second_autosalon,
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=7),
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=7),
         )
         self.third_special_offer_of_autosalon = G(
             model=SpecialOfferOfAutoSalon,
@@ -503,16 +503,16 @@ class SpecialOfferOfAutoSalonTestCase(APITestCase):
             descr="Special offer for customers!",
             discount=25000,
             dealer=self.second_autosalon,
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=7),
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=7),
         )
         self.special_offer_of_autosalon_data = {
             "name": "Sale 70%",
             "descr": "Special offer for autosalons!",
             "discount": 2000,
             "dealer": self.first_autosalon.id,
-            "start_date": timezone.now(),
-            "end_date": timezone.now() + timedelta(days=7),
+            "start_date": date.today(),
+            "end_date": date.today() + timedelta(days=7),
         }
 
     def test_special_offer_of_autosalon_list(self):
@@ -589,13 +589,13 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
         self.first_supplier = G(
             model=Supplier,
             name="AutoHouse",
-            year_of_issue=timezone.now(),
+            year_of_issue=date.today(),
             price=25000.00,
         )
         self.second_supplier = G(
             model=Supplier,
             name="Atlant-M",
-            year_of_issue=timezone.now(),
+            year_of_issue=date.today(),
             price=15000.00,
         )
 
@@ -606,8 +606,8 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
             descr="Special offer for autosalons!",
             discount=2000,
             supplier=self.first_supplier,
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=7),
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=7),
         )
         self.second_special_offer_of_supplier = G(
             model=SpecialOfferOfSupplier,
@@ -616,8 +616,8 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
             descr="Special offer for autosalons!",
             discount=5000,
             supplier=self.second_supplier,
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=7),
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=7),
         )
         self.third_special_offer_of_supplier = G(
             model=SpecialOfferOfSupplier,
@@ -626,16 +626,16 @@ class SpecialOfferOfSupplierTestCase(APITestCase):
             descr="Special offer for suppliers!",
             discount=25000,
             supplier=self.first_supplier,
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=7),
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=7),
         )
         self.special_offer_of_supplier_data = {
             "name": "Sale 70%",
             "descr": "Special offer for autosalons!",
             "discount": 2000,
             "supplier": self.second_supplier.id,
-            "start_date": timezone.now(),
-            "end_date": timezone.now() + timedelta(days=7),
+            "start_date": date.today(),
+            "end_date": date.today() + timedelta(days=7),
         }
 
     def test_special_offer_of_supplier_list(self):
